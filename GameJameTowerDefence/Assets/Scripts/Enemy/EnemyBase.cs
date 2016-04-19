@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class EnemyBase : MonoBehaviour{
 
+    public GameObject waypointScript;
 
     private string type_;
     private int health_;
     private float moveSpeed_;
-
     private Transform[] wayPoints_;
 
     public string type

@@ -13,12 +13,11 @@ public class BasicEnemy : EnemyBase{
         this.health = 10;
         this.moveSpeed = 2.5f;
 
-        this.wayPoints = new Transform[3];
+        //This finds the Gameobject in the scene that hold all the waypoints
+        this.waypointScript = GameObject.Find("WayPoints");
 
-        //TODO: Clean this up
-        this.wayPoints[0] = GameObject.Find("1").transform;
-        this.wayPoints[1] = GameObject.Find("2").transform;
-        this.wayPoints[2] = GameObject.Find("3").transform;
+        //this accesses the script attached to the gameobject
+        this.wayPoints = waypointScript.GetComponent<Waypoints>().waypoints;
 
     }
 	
@@ -26,7 +25,7 @@ public class BasicEnemy : EnemyBase{
 
     void Update()
     {
-        if (currentWaypoint < this.wayPoints.Length)
+       if (currentWaypoint < this.wayPoints.Length)
         {
             if (targetWaypoint == null)
             {
@@ -44,7 +43,6 @@ public class BasicEnemy : EnemyBase{
         {
             move();
         }
-
 
     }
 
