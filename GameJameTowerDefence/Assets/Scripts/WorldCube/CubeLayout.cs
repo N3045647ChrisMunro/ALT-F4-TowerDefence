@@ -6,13 +6,16 @@ public class CubeLayout : MonoBehaviour {
 	// Use this for initialization
     public GameObject rightPlane;
     public GameObject leftPlane;
+    public GameObject topPlane;
     public GameObject botPlane;
     public GameObject farPlane;
     public GameObject nearPlane;
 
 
 	void Start () 
-    {
+    {  
+        //-2.09, 2.74, -1.79
+
         //RIGHT PLANE
         //Rotation
         Quaternion target = Quaternion.Euler(90, 0, 0);
@@ -28,6 +31,14 @@ public class CubeLayout : MonoBehaviour {
         //Position
         newPos = new Vector3(4.914f, -0.442f, -0.486f);
         leftPlane.transform.position = newPos;
+
+        //TOP PLANE
+        //Rotation
+      //  target = Quaternion.Euler(0, 0, 0);
+       // topPlane.transform.rotation = target;
+        //Position
+        newPos = new Vector3(0, 0, 0);
+        topPlane.transform.position = newPos;
 
         //BOT PLANE
         //Rotation
