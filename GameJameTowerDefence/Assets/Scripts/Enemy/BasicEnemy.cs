@@ -44,6 +44,12 @@ public class BasicEnemy : EnemyBase{
             move();
         }
 
+        if (health <= 0)
+        {
+            Debug.Log("Enemy died");
+            Destroy(this.gameObject);
+        }
+
     }
 
     public override void move()
@@ -57,11 +63,27 @@ public class BasicEnemy : EnemyBase{
         //Check to see if we reached the waypoint
         if (transform.position == targetWaypoint.position)
         {
-            currentWaypoint++;
-            targetWaypoint = this.wayPoints[currentWaypoint];
-
+            if (currentWaypoint == this.wayPoints.Length - 1)
+            {
+                targetWaypoint = null;
+                currentWaypoint++;
+            }
+            else
+            {
+                currentWaypoint++;
+                targetWaypoint = this.wayPoints[currentWaypoint];
+            }
         }
 
+    }
+
+    void OnCollisionEnter(Collision col)
+    {
+        if (col.gameObject.tag == "Bullet")
+        {
+            Debug.Log("GOT HIT");
+            health -= 5;
+        }
     }
 
 }

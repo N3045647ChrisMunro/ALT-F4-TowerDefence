@@ -117,7 +117,6 @@ public class joystickControl : MonoBehaviour {
     void select()
     {
         float triggerPressed = Input.GetAxis("TriggerAnalogue");        //Get value from analogue
-        Debug.Log(triggerPressed);
         if(triggerPressed !=0)                                          //If LT is pressed
         {
             RaycastHit hit;

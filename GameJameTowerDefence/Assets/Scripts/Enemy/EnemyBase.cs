@@ -45,4 +45,9 @@ public class EnemyBase : MonoBehaviour{
         
     }
 
+    public virtual void TakeDamage(int amount)
+    {
+        health -= amount;
+    }
+
 }
