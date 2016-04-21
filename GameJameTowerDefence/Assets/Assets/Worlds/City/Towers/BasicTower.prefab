@@ -54,6 +54,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &112176
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 434384}
+  m_Layer: 0
+  m_Name: PointOfFire
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &113582
 GameObject:
   m_ObjectHideFlags: 0
@@ -98,6 +113,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 417984}
+  - 114: {fileID: 11405272}
   m_Layer: 0
   m_Name: BasicTower
   m_TagString: Untagged
@@ -376,8 +392,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 120876}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 2.341, y: 0, z: 0.348}
+  m_LocalScale: {x: 10, y: 10, z: 10}
   m_Children:
   - {fileID: 422902}
   - {fileID: 428480}
@@ -396,6 +412,7 @@ Transform:
   - {fileID: 405548}
   - {fileID: 473918}
   - {fileID: 465894}
+  - {fileID: 434384}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!4 &422902
@@ -434,6 +451,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 417984}
   m_RootOrder: 1
+--- !u!4 &434384
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 112176}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.0548, z: 0.0428}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 417984}
+  m_RootOrder: 17
 --- !u!4 &440230
 Transform:
   m_ObjectHideFlags: 1
@@ -1387,6 +1416,23 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &11405272
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 120876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc7010d264b8077439ec694d9ee31c9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: 10
+  bulletPrefab: {fileID: 104682, guid: b4a943a2068adf3439fd43f164b1f73b, type: 2}
+  pointOfFire: {fileID: 434384}
+  cost: 5
+  damage: 1
+  radius: 20
 --- !u!136 &13601578
 CapsuleCollider:
   m_ObjectHideFlags: 1
