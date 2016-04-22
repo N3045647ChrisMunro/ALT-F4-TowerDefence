@@ -4,7 +4,8 @@ using System.Collections;
 public class Grid : MonoBehaviour
 {
 
-    public GameObject cube;
+    //public GameObject cube1;
+    public GameObject[] cubes;
     public GameObject parent;
     public GameObject side;
 
@@ -30,14 +31,20 @@ public class Grid : MonoBehaviour
     {
         cubeTileArray = new GameObject[width, height];
 
-        Vector3 size = cube.GetComponent<Renderer>().bounds.size;
+        Vector3 size = cubes[0].GetComponent<Renderer>().bounds.size;
 
         for (int y = 0; y < height; y++)
         {
             for (int x = 0; x < width; x++)
             {
+
+                //Pick random colour cube to place
+                int randIndex = Random.Range(0, cubes.Length);
+                Debug.Log("Rand IDX: " + randIndex);
+                GameObject newRandTile = cubes[randIndex];
+                
                 Vector3 pos = new Vector3(posX, 0, posZ);
-                GameObject newTile = Instantiate(cube, pos, cube.transform.rotation) as GameObject;
+                GameObject newTile = Instantiate(newRandTile, pos, newRandTile.transform.rotation) as GameObject;
                 newTile.transform.SetParent(this.transform, false);
 
                 cubeTileArray[x, y] = newTile;

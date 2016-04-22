@@ -197,7 +197,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b73e43184fce13040ad69824ddcbbaee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cube: {fileID: 152308, guid: 5070d4e2f06e25f409957354ac073803, type: 2}
+  cubes:
+  - {fileID: 152308, guid: 5070d4e2f06e25f409957354ac073803, type: 2}
+  - {fileID: 167624, guid: 92eebfcdb131d8f428d8741b76b55023, type: 2}
+  - {fileID: 198462, guid: 827d70e67402c0e4b8755d162e9aa583, type: 2}
+  - {fileID: 133110, guid: 005341a54f3210e4b8618530f5a0a797, type: 2}
   parent: {fileID: 331061495}
   side: {fileID: 0}
   worldGrid: {fileID: 0}
@@ -228,7 +232,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b73e43184fce13040ad69824ddcbbaee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cube: {fileID: 152308, guid: 5070d4e2f06e25f409957354ac073803, type: 2}
+  cubes:
+  - {fileID: 198462, guid: 827d70e67402c0e4b8755d162e9aa583, type: 2}
+  - {fileID: 133110, guid: 005341a54f3210e4b8618530f5a0a797, type: 2}
+  - {fileID: 167624, guid: 92eebfcdb131d8f428d8741b76b55023, type: 2}
+  - {fileID: 152308, guid: 5070d4e2f06e25f409957354ac073803, type: 2}
   parent: {fileID: 384315530}
   side: {fileID: 0}
   worldGrid: {fileID: 0}
@@ -346,7 +354,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b73e43184fce13040ad69824ddcbbaee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cube: {fileID: 152308, guid: 5070d4e2f06e25f409957354ac073803, type: 2}
+  cubes:
+  - {fileID: 133110, guid: 005341a54f3210e4b8618530f5a0a797, type: 2}
+  - {fileID: 198462, guid: 827d70e67402c0e4b8755d162e9aa583, type: 2}
+  - {fileID: 167624, guid: 92eebfcdb131d8f428d8741b76b55023, type: 2}
+  - {fileID: 152308, guid: 5070d4e2f06e25f409957354ac073803, type: 2}
   parent: {fileID: 478996456}
   side: {fileID: 0}
   worldGrid: {fileID: 0}
@@ -716,6 +728,7 @@ MonoBehaviour:
   selectionCurs: {fileID: 1373401246}
   menuCurs: {fileID: 1676494049}
   turret: {fileID: 1769443300}
+  parentCube: {fileID: 0}
 --- !u!1 &1514046674
 GameObject:
   m_ObjectHideFlags: 0
@@ -797,7 +810,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b73e43184fce13040ad69824ddcbbaee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cube: {fileID: 152308, guid: 5070d4e2f06e25f409957354ac073803, type: 2}
+  cubes:
+  - {fileID: 198462, guid: 827d70e67402c0e4b8755d162e9aa583, type: 2}
+  - {fileID: 133110, guid: 005341a54f3210e4b8618530f5a0a797, type: 2}
+  - {fileID: 167624, guid: 92eebfcdb131d8f428d8741b76b55023, type: 2}
+  - {fileID: 152308, guid: 5070d4e2f06e25f409957354ac073803, type: 2}
   parent: {fileID: 1570477320}
   side: {fileID: 0}
   worldGrid: {fileID: 0}
@@ -1105,7 +1122,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b73e43184fce13040ad69824ddcbbaee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cube: {fileID: 152308, guid: 5070d4e2f06e25f409957354ac073803, type: 2}
+  cubes:
+  - {fileID: 152308, guid: 5070d4e2f06e25f409957354ac073803, type: 2}
+  - {fileID: 198462, guid: 827d70e67402c0e4b8755d162e9aa583, type: 2}
+  - {fileID: 133110, guid: 005341a54f3210e4b8618530f5a0a797, type: 2}
+  - {fileID: 167624, guid: 92eebfcdb131d8f428d8741b76b55023, type: 2}
   parent: {fileID: 1805233761}
   side: {fileID: 0}
   worldGrid: {fileID: 0}
@@ -1160,7 +1181,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b73e43184fce13040ad69824ddcbbaee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cube: {fileID: 152308, guid: 5070d4e2f06e25f409957354ac073803, type: 2}
+  cubes:
+  - {fileID: 152308, guid: 5070d4e2f06e25f409957354ac073803, type: 2}
+  - {fileID: 133110, guid: 005341a54f3210e4b8618530f5a0a797, type: 2}
+  - {fileID: 167624, guid: 92eebfcdb131d8f428d8741b76b55023, type: 2}
+  - {fileID: 198462, guid: 827d70e67402c0e4b8755d162e9aa583, type: 2}
   parent: {fileID: 1968496801}
   side: {fileID: 0}
   worldGrid: {fileID: 0}

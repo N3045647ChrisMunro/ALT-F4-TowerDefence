@@ -35,7 +35,6 @@ public class WaveManager : MonoBehaviour {
     {
         for (uint i = 0; i < numEnemiesToSpawn; i++)
         {
-            Debug.Log("Got Here");
             Instantiate(enemyToSpawn_, spawnPoints[0].position, spawnPoints[0].rotation);
             spawnCount_++;
             spawnNewWave = false;
