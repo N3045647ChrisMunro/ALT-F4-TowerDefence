@@ -33,6 +33,9 @@ public class joystickControl : MonoBehaviour {
 
     //Projection
     private GameObject currentTile;
+    private Color currentColor = Color.cyan;
+    private GameObject currentNeigbour;
+    private Color currentNeighbourColor = Color.cyan;
 
     //On Click detection
     private bool triggerOn = false;
@@ -47,6 +50,8 @@ public class joystickControl : MonoBehaviour {
     public GameObject turret;
     public GameObject parentCube;
 
+    //Score
+    public ScoreSystem scoreSystem;
 
     void Start()
     {
@@ -56,6 +61,9 @@ public class joystickControl : MonoBehaviour {
         initialMenCursPos = menuCurs.transform.position;
         initialSelCursPos = selectionCurs.transform.position;
         currentCurs = menuCurs;
+
+        //Score system
+        scoreSystem = GameObject.FindGameObjectWithTag("Manager").GetComponent<ScoreSystem>();
     }
 
 	// Update is called once per frame
@@ -114,30 +122,7 @@ public class joystickControl : MonoBehaviour {
                 newCamPos.x -= cameraStep;
             }
 
-            //Projection:
-            RaycastHit hit;
-            Vector3 rayOrigin = new Vector3();
-            rayOrigin = currentCurs.transform.position;
-            rayOrigin.y -= rayOffset;
-            Ray cursorRay = new Ray(rayOrigin, Vector3.down);  //Create a ray with cursor as an origin and down as a direction
-
-            if (Physics.Raycast(cursorRay, out hit))                     //If something was hit
-            {
-                if (hit.collider.tag == "Tile")                         //Check if it is a tile
-                {
-                    GameObject tile = hit.collider.gameObject;           //Place a turret
-
-                    if(currentTile !=tile && currentTile!=null)
-                    {
-                        Renderer curTileRend = currentTile.GetComponent<Renderer>();
-                        curTileRend.material.color = Color.grey;
-                        Renderer tileRend = tile.GetComponent<Renderer>();
-                        tileRend.material.color = Color.blue;
-                    }
-
-                    currentTile = tile;
-                }
-            }
+            SelectProjection(); //Colour tiles based on cursor position
 
         }
 
@@ -162,6 +147,81 @@ public class joystickControl : MonoBehaviour {
         mainCamera.transform.position = newCamPos;
     }
 
+    void SelectProjection()
+    {
+        //Projection:
+        RaycastHit hit;
+        Vector3 rayOrigin = new Vector3();
+        rayOrigin = currentCurs.transform.position;
+        rayOrigin.y -= rayOffset;
+        Ray cursorRay = new Ray(rayOrigin, Vector3.down);  //Create a ray with cursor as an origin and down as a direction
+
+        if (Physics.Raycast(cursorRay, out hit))                     //If something was hit
+        {
+            if (hit.collider.tag == "Tile")                         //Check if it is a tile
+            {
+                GameObject tile = hit.collider.gameObject;
+                Vector3 tileSize = tile.GetComponent<Renderer>().bounds.size;       //Calculate tile width
+                int tileIndex = (int)(tile.transform.position.x / tileSize.x);      //Get an index of a tile
+
+                if (currentTile != tile && currentTile != null)
+                {
+                    //Return otiginal colours
+                    Renderer curTileRend = currentTile.GetComponent<Renderer>();
+                    curTileRend.material.color = currentColor;
+
+                    if (currentNeigbour != null)
+                    {
+                        Renderer curNeighRend = currentNeigbour.GetComponent<Renderer>();
+                        curNeighRend.material.color = currentNeighbourColor;
+                    }
+
+                    //Set up new data
+                    Renderer tileRend = tile.GetComponent<Renderer>();
+                    currentColor = tileRend.material.color;
+                    tileRend.material.color = Color.blue;
+
+                    if (tileIndex % 2 == 0)                                                //If idex is an even number
+                    {
+                        findNeihbour(tile.transform.position, Vector3.right);
+                    }
+                    else
+                    {
+                        findNeihbour(tile.transform.position, Vector3.left);
+                    }
+                }
+
+
+                currentTile = tile;
+            }
+        }
+    }
+
+    //This function finds the other half of a tile
+    void findNeihbour(Vector3 tilePos, Vector3 rayDirection)
+    {
+        RaycastHit rightHit;
+        Vector3 tileOrigin = new Vector3();
+        tileOrigin = tilePos;
+        Ray tileRay = new Ray(tileOrigin, rayDirection);
+        if (Physics.Raycast(tileRay, out rightHit))                     //If something was hit
+        {
+            if (rightHit.collider.tag == "Tile")                         //Check if it is a tile
+            {
+                GameObject neighbour = rightHit.collider.gameObject;
+                Renderer neighbourRend = neighbour.GetComponent<Renderer>();
+
+                //Save original data
+                currentNeigbour = neighbour;
+                currentNeighbourColor = neighbourRend.material.color;
+
+                //Perform a change
+                neighbourRend.material.color = Color.yellow;
+            }
+        }
+    }
+
+    //-------------------------------------------CHECK EDGES-----------------------------------------------
     //These functions return true, if a cursor is outside allowed area 
     bool rightEdge()
     {
@@ -195,8 +255,10 @@ public class joystickControl : MonoBehaviour {
             return true;
         return false;
     }
+    //-------------------------------------------CHECK EDGES-----------------------------------------------
 
-    //Function to select tiles
+    //SELECT
+    //Reacts on RT pressed
     void select()
     {
         float triggerPressed = Input.GetAxis("TriggerAnalogue");        //Get value from analogue
@@ -221,6 +283,7 @@ public class joystickControl : MonoBehaviour {
 
     }
 
+    //CURSOR CHANGE
     void cursorChange()
     {
         if (currentCurs == selectionCurs)
@@ -243,6 +306,7 @@ public class joystickControl : MonoBehaviour {
         mainCamera.transform.position = initialCameraPos;
     }
 
+    //SELECTION CURSOR ACTIVE
     void onSelectCursorClick()
     {
         RaycastHit hit;
@@ -255,8 +319,12 @@ public class joystickControl : MonoBehaviour {
         {
             if (hit.collider.tag == "Tile")                         //Check if it is a tile
             {
-                GameObject tile = hit.collider.gameObject;           //Place a turret
+                //Tile
+                GameObject tile = hit.collider.gameObject;                          //Get an object which was hit
+
+                //Turret
                 Vector3 turretPos = tile.transform.position;
+                turretPos.y = turret.transform.position.y;
                 GameObject newTurret = Instantiate(turret, turretPos, turret.transform.rotation) as GameObject;
                 newTurret.transform.parent = parentCube.transform;
                 cursorChange();
@@ -264,6 +332,7 @@ public class joystickControl : MonoBehaviour {
         }
     }
 
+    //MENU CURSOR ACTIVE
     void onMenuCursorClick()
     {
         RaycastHit hit;
@@ -275,7 +344,10 @@ public class joystickControl : MonoBehaviour {
         {
             if (hit.collider.tag == "GUI")                         //Check if it is a tile
             {
-                cursorChange();
+                if (scoreSystem.buyTurret())
+                    cursorChange();
+                else
+                    Debug.Log("Not eneough money");
             }
         }
     }

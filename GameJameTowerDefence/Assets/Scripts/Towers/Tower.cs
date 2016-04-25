@@ -4,7 +4,6 @@ using System.Collections;
 public class Tower : MonoBehaviour {
 
 	// Use this for initialization
-	Transform turretTransform;
 
 	public float range = 10f;
 	public GameObject bulletPrefab;
@@ -22,7 +21,8 @@ public class Tower : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		turretTransform = transform.Find("Turret");
+
+
 	}
 	
 	// Update is called once per frame

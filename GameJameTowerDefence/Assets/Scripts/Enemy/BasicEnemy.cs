@@ -6,6 +6,9 @@ public class BasicEnemy : EnemyBase{
     private int currentWaypoint = 0;
     Transform targetWaypoint;
 
+    //KRISTINA was here
+    public ScoreSystem scoreSystem;
+
 	// Use this for initialization
     void Start()
     {
@@ -19,6 +22,8 @@ public class BasicEnemy : EnemyBase{
         //this accesses the script attached to the gameobject
         this.wayPoints = waypointScript.GetComponent<Waypoints>().waypoints;
 
+        //Initializing Score system
+        scoreSystem = GameObject.FindGameObjectWithTag("Manager").GetComponent<ScoreSystem>();
     }
 	
 	// Update is called once per frame
@@ -46,6 +51,7 @@ public class BasicEnemy : EnemyBase{
 
         if (health <= 0)
         {
+            scoreSystem.UpdateGold = true;
             Debug.Log("Enemy died");
             Destroy(this.gameObject);
         }
