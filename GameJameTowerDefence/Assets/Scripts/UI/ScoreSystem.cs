@@ -22,7 +22,7 @@ public class ScoreSystem : MonoBehaviour {
     private int goldPerEnemy = 10;
 
     //Turret
-    private int turretPrice = 50;
+    private int turretPrice = 5;
 
 	void Start () 
     {

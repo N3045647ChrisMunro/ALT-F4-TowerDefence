@@ -18,20 +18,21 @@ public class CubeLayout : MonoBehaviour {
 
         //RIGHT PLANE
         //Rotation
-        Quaternion target = Quaternion.Euler(90, 0, 0);
+        Quaternion target = Quaternion.Euler(270, 180, 0);
         rightPlane.transform.rotation = target;
         //Position
-        Vector3 newPos = new Vector3(0.0f, -0.442f, 4.42f);
-        rightPlane.transform.position = newPos;
-
+        Vector3 newPos = new Vector3(4.667f, -9.61949f, 4.706f);
+        rightPlane.transform.localPosition = newPos;
+        
         //LEFT PLANE
         //Rotation
-        target = Quaternion.Euler(90, 180, 0);
-        leftPlane.transform.rotation = target;
+        target = Quaternion.Euler(270, 270, 90);
+        leftPlane.transform.localRotation = target;
         //Position
-        newPos = new Vector3(4.914f, -0.442f, -0.486f);
-        leftPlane.transform.position = newPos;
+        newPos = new Vector3(0.0f, -14.533f, -0.28405f);
+        leftPlane.transform.localPosition = newPos;
 
+        /*
         //TOP PLANE
         //Rotation
       //  target = Quaternion.Euler(0, 0, 0);
@@ -39,31 +40,33 @@ public class CubeLayout : MonoBehaviour {
         //Position
         newPos = new Vector3(0, 0, 0);
         topPlane.transform.position = newPos;
-
+         */
         //BOT PLANE
         //Rotation
-        target = Quaternion.Euler(0, 180, 180);
+        target = Quaternion.Euler(0, 0, 180);
         botPlane.transform.rotation = target;
         //Position
-        newPos = new Vector3(0.0f, -4.815f, 3.926f);
-        botPlane.transform.position = newPos;
+        newPos = new Vector3(4.6669f, -4.9893f, -24.56252f);
+        botPlane.transform.localPosition = newPos;
+        
 
         //FAR PLANE
         //Rotation
-        target = Quaternion.Euler(90, 270, 0);
+        target = Quaternion.Euler(0, 0, 90);
         farPlane.transform.rotation = target;
         //Position
-        newPos = new Vector3(0.044f, -0.442f, -0.485f);
-        farPlane.transform.position = newPos;
+        //newPos = new Vector3(-0.115f, -4.8387f, -19.654f);
+        newPos = new Vector3(-0.1612f, -4.828f, -19.6539f);
+        farPlane.transform.localPosition = newPos;
 
         //NEAR PLANE
         //Rotation
-        target = Quaternion.Euler(90, 90, 0);
+        target = Quaternion.Euler(0, 0, 270);
         nearPlane.transform.rotation = target;
         //Position
-        newPos = new Vector3(4.864f, -0.442f, 4.417f);
-        nearPlane.transform.position = newPos;
-
+        newPos = new Vector3(4.8281f, -0.16129f, -14.74f);
+        nearPlane.transform.localPosition = newPos;
+        
 	}
 	
 	// Update is called once per frame

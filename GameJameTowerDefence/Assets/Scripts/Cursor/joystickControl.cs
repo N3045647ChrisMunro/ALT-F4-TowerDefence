@@ -12,16 +12,15 @@ public class joystickControl : MonoBehaviour {
 
     //These variables are used to define the area, which cursor should never leave
     //Selection cursor
-    private float rightMaximumSel = 4.7f;
-    private float leftMaximumSel = 0.1f;
-    private float topMaximumSel = 4.2f;
-    private float botMaximumSel = -0.3f;
+    private float rightMaximumSel = 6.83f;
+    private float leftMaximumSel = 2.55f;
+    private float topMaximumSel = 6.1f;
+    private float botMaximumSel = 1.7f;
+    private Color projectionColor = Color.yellow;
 
     //Menu Cursor
     private float topMaximumMenu = 2.43f;
     private float botMaximumMenu = 0.03f;
-
-    private float rayOffset = -1;    //Used to correctly cast a rat
 
     private Camera mainCamera;
     public float cameraStep = 0.1f;
@@ -30,12 +29,10 @@ public class joystickControl : MonoBehaviour {
     public GameObject selectionCurs;
     public GameObject menuCurs;
     private GameObject currentCurs;
-
-    //Projection
-    private GameObject currentTile;
-    private Color currentColor = Color.cyan;
-    private GameObject currentNeigbour;
-    private Color currentNeighbourColor = Color.cyan;
+    public GameObject cursorProjection;
+    public GameObject currentTile;
+    public GameObject selParticles;
+    public GameObject currentTurret;
 
     //On Click detection
     private bool triggerOn = false;
@@ -49,9 +46,17 @@ public class joystickControl : MonoBehaviour {
     //Turret
     public GameObject turret;
     public GameObject parentCube;
+    public GameObject newTurret;
 
     //Score
     public ScoreSystem scoreSystem;
+
+    //Timer
+    public float curTime = 0;
+    public float timeInterval = 0.1f;
+
+    //Cursor functionality
+    private bool selectingTurret = false;
 
     void Start()
     {
@@ -60,18 +65,30 @@ public class joystickControl : MonoBehaviour {
 
         initialMenCursPos = menuCurs.transform.position;
         initialSelCursPos = selectionCurs.transform.position;
+
         currentCurs = menuCurs;
 
         //Score system
         scoreSystem = GameObject.FindGameObjectWithTag("Manager").GetComponent<ScoreSystem>();
+
     }
 
 	// Update is called once per frame
 	void Update ()
     {
-        moveCursor();
+        if (curTime <= 0.2f)
+        {
+            moveCursor();
+            curTime = timeInterval;
+        }
+        else
+        {
+            curTime -= Time.deltaTime;
+        }
+        //moveMenuCurs();
         select();
 	}
+
 
     //This functions moves the cursor accroding to joystick input
     void moveCursor()
@@ -91,8 +108,6 @@ public class joystickControl : MonoBehaviour {
         //This is used to slightly move the camera when cursor moves
         Vector3 newCamPos = new Vector3();
         newCamPos = mainCamera.transform.position;
-
-        
 
         //Z and X axisaxis
         if (currentCurs == selectionCurs)
@@ -122,8 +137,7 @@ public class joystickControl : MonoBehaviour {
                 newCamPos.x -= cameraStep;
             }
 
-            SelectProjection(); //Colour tiles based on cursor position
-
+            projectionUpdate();
         }
 
         //Y AXIS
@@ -147,77 +161,53 @@ public class joystickControl : MonoBehaviour {
         mainCamera.transform.position = newCamPos;
     }
 
-    void SelectProjection()
+   
+    //Manages the projection
+    void projectionUpdate()
     {
-        //Projection:
         RaycastHit hit;
         Vector3 rayOrigin = new Vector3();
         rayOrigin = currentCurs.transform.position;
-        rayOrigin.y -= rayOffset;
+        //rayOrigin.y -= rayOffset;
         Ray cursorRay = new Ray(rayOrigin, Vector3.down);  //Create a ray with cursor as an origin and down as a direction
+
 
         if (Physics.Raycast(cursorRay, out hit))                     //If something was hit
         {
+            //OVER TILE
             if (hit.collider.tag == "Tile")                         //Check if it is a tile
             {
+                deleteProjection();
+                selParticles.SetActive(false);
+
                 GameObject tile = hit.collider.gameObject;
-                Vector3 tileSize = tile.GetComponent<Renderer>().bounds.size;       //Calculate tile width
-                int tileIndex = (int)(tile.transform.position.x / tileSize.x);      //Get an index of a tile
+                Vector3 newPos = tile.transform.position;
 
-                if (currentTile != tile && currentTile != null)
-                {
-                    //Return otiginal colours
-                    Renderer curTileRend = currentTile.GetComponent<Renderer>();
-                    curTileRend.material.color = currentColor;
-
-                    if (currentNeigbour != null)
-                    {
-                        Renderer curNeighRend = currentNeigbour.GetComponent<Renderer>();
-                        curNeighRend.material.color = currentNeighbourColor;
-                    }
-
-                    //Set up new data
-                    Renderer tileRend = tile.GetComponent<Renderer>();
-                    currentColor = tileRend.material.color;
-                    tileRend.material.color = Color.blue;
-
-                    if (tileIndex % 2 == 0)                                                //If idex is an even number
-                    {
-                        findNeihbour(tile.transform.position, Vector3.right);
-                    }
-                    else
-                    {
-                        findNeihbour(tile.transform.position, Vector3.left);
-                    }
-                }
-
-
+                newPos.y += 0.07f;
+                GameObject newProj = Instantiate(cursorProjection, newPos, cursorProjection.transform.rotation) as GameObject;
+               //currentTile = newProj;
                 currentTile = tile;
+            }
+
+            //OVER TURRET
+            if(hit.collider.tag=="Turret" && selectingTurret)
+            {
+
+                deleteProjection();
+                GameObject Turret = hit.collider.gameObject;
+                selParticles.SetActive(true);
+                currentTurret = hit.collider.gameObject;
             }
         }
     }
 
-    //This function finds the other half of a tile
-    void findNeihbour(Vector3 tilePos, Vector3 rayDirection)
+    void deleteProjection()
     {
-        RaycastHit rightHit;
-        Vector3 tileOrigin = new Vector3();
-        tileOrigin = tilePos;
-        Ray tileRay = new Ray(tileOrigin, rayDirection);
-        if (Physics.Raycast(tileRay, out rightHit))                     //If something was hit
+        GameObject previousProj = GameObject.FindGameObjectWithTag("CursorProjection");
+
+        if (previousProj != null)
         {
-            if (rightHit.collider.tag == "Tile")                         //Check if it is a tile
-            {
-                GameObject neighbour = rightHit.collider.gameObject;
-                Renderer neighbourRend = neighbour.GetComponent<Renderer>();
-
-                //Save original data
-                currentNeigbour = neighbour;
-                currentNeighbourColor = neighbourRend.material.color;
-
-                //Perform a change
-                neighbourRend.material.color = Color.yellow;
-            }
+            Destroy(previousProj);
         }
     }
 
@@ -286,6 +276,7 @@ public class joystickControl : MonoBehaviour {
     //CURSOR CHANGE
     void cursorChange()
     {
+        deleteProjection();
         if (currentCurs == selectionCurs)
         {
             menuCurs.SetActive(true);
@@ -304,51 +295,83 @@ public class joystickControl : MonoBehaviour {
         triggerOff = false;
         triggerOn = false;
         mainCamera.transform.position = initialCameraPos;
+        deleteProjection();
     }
 
     //SELECTION CURSOR ACTIVE
     void onSelectCursorClick()
     {
-        RaycastHit hit;
-        Vector3 rayOrigin = new Vector3();
-        rayOrigin = currentCurs.transform.position;
-        rayOrigin.y -= rayOffset;
-        Ray cursorRay = new Ray(rayOrigin, Vector3.down);  //Create a ray with cursor as an origin and down as a direction
-
-        if (Physics.Raycast(cursorRay, out hit))                     //If something was hit
+        if (!selectingTurret)
         {
-            if (hit.collider.tag == "Tile")                         //Check if it is a tile
-            {
-                //Tile
-                GameObject tile = hit.collider.gameObject;                          //Get an object which was hit
+            GameObject newTurret = Instantiate(turret, currentTile.transform.position, turret.transform.rotation) as GameObject;
 
-                //Turret
-                Vector3 turretPos = tile.transform.position;
-                turretPos.y = turret.transform.position.y;
-                GameObject newTurret = Instantiate(turret, turretPos, turret.transform.rotation) as GameObject;
-                newTurret.transform.parent = parentCube.transform;
-                cursorChange();
+            currentTile.tag = "UsedTile";
+
+            Vector3 turretPos = currentTile.transform.position;
+            turretPos.x += 0.646f;
+            turretPos.z -= 0.35f;
+            float sizeY = newTurret.GetComponent<BoxCollider>().bounds.size.y;
+            Debug.Log(sizeY);
+            turretPos.y += sizeY;
+
+            newTurret.transform.parent = parentCube.transform;
+            newTurret.transform.position = turretPos;
+
+            deleteProjection();
+            cursorChange();
+
+            currentTile = null;
+        }
+        else
+        {
+            deleteProjection();
+            if (currentTurret != null)
+            {
+                Vector3 pos = currentTurret.transform.position;
+                Destroy(currentTurret);
+                GameObject newTurr = Instantiate(newTurret, pos, cursorProjection.transform.rotation) as GameObject;
+                newTurr.transform.parent = parentCube.transform;
             }
+            cursorChange();
         }
     }
 
     //MENU CURSOR ACTIVE
     void onMenuCursorClick()
     {
+        deleteProjection();
         RaycastHit hit;
         Vector3 rayOrigin = new Vector3();
         rayOrigin = currentCurs.transform.position;
         Ray cursorRay = new Ray(rayOrigin, Vector3.forward);  //Create a ray with cursor as an origin and down as a direction
 
+        //Some button was hit
         if (Physics.Raycast(cursorRay, out hit))                     //If something was hit
         {
             if (hit.collider.tag == "GUI")                         //Check if it is a tile
             {
-                if (scoreSystem.buyTurret())
+                //BUY TURRET
+                if (hit.collider.name == "buyTurret")
+                {
+                    selectingTurret = false;
+                    if (scoreSystem.buyTurret())
+                        cursorChange();
+                    else
+                        Debug.Log("Not eneough money");
+                }
+
+                //UPGRADE TURRET
+                if (hit.collider.name == "upgrade")
+                {
+                    selectingTurret = true;
                     cursorChange();
-                else
-                    Debug.Log("Not eneough money");
+                }
             }
+        }
+        else
+        {
+            triggerOff = false;
+            triggerOn = false;
         }
     }
 }

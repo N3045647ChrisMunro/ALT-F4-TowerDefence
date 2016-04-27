@@ -9,7 +9,7 @@ public class EnemyBase : MonoBehaviour{
     private string type_;
     private int health_;
     private float moveSpeed_;
-    private Transform[] wayPoints_;
+    private List<Transform> wayPoints_;
 
     public string type
     {
@@ -29,7 +29,7 @@ public class EnemyBase : MonoBehaviour{
         set { moveSpeed_ = value; }
     }
 
-    public Transform[] wayPoints
+    public List<Transform> wayPoints
     {
         get { return wayPoints_; }
         set { wayPoints_ = value; }
@@ -37,7 +37,7 @@ public class EnemyBase : MonoBehaviour{
 
     public EnemyBase() 
     {
-
+        
     }
 
     public virtual void move()

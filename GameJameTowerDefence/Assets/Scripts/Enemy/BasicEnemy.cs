@@ -12,15 +12,17 @@ public class BasicEnemy : EnemyBase{
 	// Use this for initialization
     void Start()
     {
+        this.transform.SetParent(GameObject.FindGameObjectWithTag("WorldCube").transform, false);
+
         this.type = "basic";
         this.health = 10;
         this.moveSpeed = 2.5f;
 
         //This finds the Gameobject in the scene that hold all the waypoints
-        this.waypointScript = GameObject.Find("WayPoints");
+        this.waypointScript = GameObject.FindGameObjectWithTag("WorldCube");
 
         //this accesses the script attached to the gameobject
-        this.wayPoints = waypointScript.GetComponent<Waypoints>().waypoints;
+        this.wayPoints = waypointScript.GetComponent<Grid>().waypoints;
 
         //Initializing Score system
         scoreSystem = GameObject.FindGameObjectWithTag("Manager").GetComponent<ScoreSystem>();
@@ -30,7 +32,7 @@ public class BasicEnemy : EnemyBase{
 
     void Update()
     {
-       if (currentWaypoint < this.wayPoints.Length)
+       if (currentWaypoint < this.wayPoints.Count)
         {
             if (targetWaypoint == null)
             {
@@ -39,7 +41,7 @@ public class BasicEnemy : EnemyBase{
         }
 
         //check to see if we hit the last waypoint
-        if (currentWaypoint >= this.wayPoints.Length)
+       if (currentWaypoint >= this.wayPoints.Count)
         {
             currentWaypoint = 0;
             Destroy(this.gameObject);
@@ -69,7 +71,7 @@ public class BasicEnemy : EnemyBase{
         //Check to see if we reached the waypoint
         if (transform.position == targetWaypoint.position)
         {
-            if (currentWaypoint == this.wayPoints.Length - 1)
+            if (currentWaypoint == this.wayPoints.Count - 1)
             {
                 targetWaypoint = null;
                 currentWaypoint++;

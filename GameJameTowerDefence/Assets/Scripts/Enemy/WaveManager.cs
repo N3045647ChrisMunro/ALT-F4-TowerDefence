@@ -26,18 +26,8 @@ public class WaveManager : MonoBehaviour {
 
         spawnPoint = new GameObject();
 
-        //Restet the rotation so the enemy spawns correctly 
-        Quaternion tempRot = new Quaternion(0, 0, 0, 0);
-        spawnPoint.transform.rotation = tempRot;
-
-        //Get the tile pos and add a custom y value so the enemy sits onto of the plane
-        //and not half inside
-        Vector3 tilePos = grid.getTilePosition(17, 3);
-
-        spawnPoint.transform.position = tilePos;
-
-        //Change colour
-        grid.ChangeTileColour(Color.black, 17, 3);
+        spawnPoint.transform.position = grid.waypoints[0].transform.localPosition;
+        spawnPoint.transform.rotation = grid.waypoints[0].transform.rotation;
 
         //Initializing Score system
         scoreSystem = GameObject.FindGameObjectWithTag("Manager").GetComponent<ScoreSystem>();
@@ -45,6 +35,7 @@ public class WaveManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
 
         if (spawnNewWave == true)
         {

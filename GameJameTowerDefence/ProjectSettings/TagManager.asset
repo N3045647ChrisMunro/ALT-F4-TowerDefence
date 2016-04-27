@@ -9,12 +9,17 @@ TagManager:
   - Bullet
   - Tile
   - GUI
-  - City
-  - Pirate
-  - Castle
-  - Ninja
-  - Underground
   - Manager
+  - CursorProjection
+  - WorldCube
+  - Top
+  - Bot
+  - Far
+  - Near
+  - Left
+  - Right
+  - Turret
+  - UsedTile
   layers:
   - Default
   - TransparentFX
