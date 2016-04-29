@@ -387,7 +387,7 @@ public class Grid : MonoBehaviour
     {
         //Size of the tile, so the half length can be substracted from the
         //position to centre it in a 4x2 tile
-        Vector3 tileSize = cubes[0].GetComponent<Collider>().bounds.size;
+        Vector3 tileSize = cubes[14].GetComponent<Collider>().bounds.size;
 
         Vector3 tempPos = new Vector3();
 

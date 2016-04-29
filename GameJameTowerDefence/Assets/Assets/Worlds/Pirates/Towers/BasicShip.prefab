@@ -33,6 +33,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &117680
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 487784}
+  m_Layer: 0
+  m_Name: PointOfFire
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &123394
 GameObject:
   m_ObjectHideFlags: 1
@@ -145,6 +160,7 @@ GameObject:
   - 4: {fileID: 472648}
   - 114: {fileID: 11424050}
   - 65: {fileID: 6531060}
+  - 114: {fileID: 11494756}
   m_Layer: 0
   m_Name: BasicShip
   m_TagString: Turret
@@ -566,6 +582,7 @@ Transform:
   - {fileID: 415494}
   - {fileID: 404164}
   - {fileID: 459734}
+  - {fileID: 487784}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!4 &481144
@@ -592,6 +609,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 415494}
   m_RootOrder: 0
+--- !u!4 &487784
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 117680}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.334, y: -0.321, z: -0.069}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 472648}
+  m_RootOrder: 4
 --- !u!4 &487938
 Transform:
   m_ObjectHideFlags: 1
@@ -1343,12 +1372,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc7010d264b8077439ec694d9ee31c9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 10
+  nearestEnemy: {fileID: 0}
   bulletPrefab: {fileID: 104682, guid: b4a943a2068adf3439fd43f164b1f73b, type: 2}
   pointOfFire: {fileID: 434384, guid: 3a2804553fef31245a5bf821acd6a477, type: 2}
-  cost: 5
-  damage: 1
-  radius: 20
+--- !u!114 &11494756
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 139440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc9aea1dea391f143a3d1f641515934e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nearestEnemy: {fileID: 0}
+  bulletPrefab: {fileID: 104682, guid: b4a943a2068adf3439fd43f164b1f73b, type: 2}
+  pointOfFire: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

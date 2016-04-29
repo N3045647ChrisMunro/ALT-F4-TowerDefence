@@ -12,15 +12,14 @@ public class joystickControl : MonoBehaviour {
 
     //These variables are used to define the area, which cursor should never leave
     //Selection cursor
-    private float rightMaximumSel = 6.83f;
-    private float leftMaximumSel = 2.55f;
+    private float rightMaximumSel = 6.8f;
+    private float leftMaximumSel = 2.4f;
     private float topMaximumSel = 6.1f;
-    private float botMaximumSel = 1.7f;
-    private Color projectionColor = Color.yellow;
+    private float botMaximumSel = 1.8f;
 
     //Menu Cursor
     private float topMaximumMenu = 2.43f;
-    private float botMaximumMenu = 0.03f;
+    private float botMaximumMenu = -1f;
 
     private Camera mainCamera;
     public float cameraStep = 0.1f;
@@ -29,7 +28,10 @@ public class joystickControl : MonoBehaviour {
     public GameObject selectionCurs;
     public GameObject menuCurs;
     private GameObject currentCurs;
+
     public GameObject cursorProjection;
+    public GameObject illegalProjection;
+
     public GameObject currentTile;
     public GameObject selParticles;
     public GameObject currentTurret;
@@ -58,6 +60,9 @@ public class joystickControl : MonoBehaviour {
     //Cursor functionality
     private bool selectingTurret = false;
 
+    //Waves
+    public WaveManager waveManager;
+
     void Start()
     {
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
@@ -76,6 +81,7 @@ public class joystickControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
+        waveManager.spawnNewWave = false;
         if (curTime <= 0.2f)
         {
             moveCursor();
@@ -182,11 +188,32 @@ public class joystickControl : MonoBehaviour {
 
                 GameObject tile = hit.collider.gameObject;
                 Vector3 newPos = tile.transform.position;
-
                 newPos.y += 0.07f;
                 GameObject newProj = Instantiate(cursorProjection, newPos, cursorProjection.transform.rotation) as GameObject;
-               //currentTile = newProj;
+
+                Renderer rend = newProj.GetComponent<Renderer>();
+                rend.sharedMaterial.color = Color.green;
+
                 currentTile = tile;
+            }
+
+            //OVER ILLEGAL
+            if (hit.collider.tag == "UsedTile")
+            {
+                deleteProjection();
+                selParticles.SetActive(false);
+
+                GameObject tile = hit.collider.gameObject;
+                Vector3 newPos = tile.transform.position;
+                newPos.y += 0.07f;
+                GameObject newProj = Instantiate(cursorProjection, newPos, cursorProjection.transform.rotation) as GameObject;
+
+                Renderer rend = newProj.GetComponent<Renderer>();
+                rend.sharedMaterial.color = Color.red;
+
+                Debug.Log("LALALA");
+
+                currentTile = null;
             }
 
             //OVER TURRET
@@ -218,6 +245,12 @@ public class joystickControl : MonoBehaviour {
         if (currentCurs.transform.position.x > rightMaximumSel)
             return true;
         return false;
+    }
+
+    public void resetSelCursor()
+    {
+        selectionCurs.transform.position = initialSelCursPos;
+        mainCamera.transform.position = initialCameraPos;
     }
 
     bool leftEdge()
@@ -301,7 +334,7 @@ public class joystickControl : MonoBehaviour {
     //SELECTION CURSOR ACTIVE
     void onSelectCursorClick()
     {
-        if (!selectingTurret)
+        if (!selectingTurret && currentTile !=null)
         {
             GameObject newTurret = Instantiate(turret, currentTile.transform.position, turret.transform.rotation) as GameObject;
 
@@ -366,6 +399,13 @@ public class joystickControl : MonoBehaviour {
                     selectingTurret = true;
                     cursorChange();
                 }
+
+                //WAVE SPAWN
+                if (hit.collider.name == "waveSpawn")
+                {
+                    waveManager.setNumEnemiesPerWave();
+                    waveManager.spawnNewWave = true;
+                }
             }
         }
         else
@@ -373,5 +413,8 @@ public class joystickControl : MonoBehaviour {
             triggerOff = false;
             triggerOn = false;
         }
+
+        triggerOff = false;
+        triggerOn = false;
     }
 }

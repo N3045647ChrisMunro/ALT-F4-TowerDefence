@@ -32,6 +32,7 @@ public class BasicEnemy : EnemyBase{
 
     void Update()
     {
+        
        if (currentWaypoint < this.wayPoints.Count)
         {
             if (targetWaypoint == null)
@@ -54,9 +55,27 @@ public class BasicEnemy : EnemyBase{
         if (health <= 0)
         {
             scoreSystem.UpdateGold = true;
-            Debug.Log("Enemy died");
             Destroy(this.gameObject);
         }
+
+        if (currentWaypoint <= 11)
+        {
+            this.currFace = "TopPlane";
+        }
+        if (currentWaypoint > 11 && currentWaypoint <= 21)
+        {
+            this.currFace = "FarPlane";
+        }
+        if (currentWaypoint > 21 && currentWaypoint <= 37)
+        {
+            this.currFace = "BotPlane";
+        }
+        if (currentWaypoint > 38 && currentWaypoint <= 47)
+        {
+            this.currFace = "NearPlane";
+        }
+
+        Debug.Log("Curr Face: " + this.currFace);
 
     }
 
@@ -89,8 +108,9 @@ public class BasicEnemy : EnemyBase{
     {
         if (col.gameObject.tag == "Bullet")
         {
+
             Debug.Log("GOT HIT");
-            health -= 5;
+            health -= col.gameObject.GetComponent<Bullet>().damage;
         }
     }
 

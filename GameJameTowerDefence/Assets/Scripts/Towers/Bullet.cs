@@ -6,13 +6,13 @@ public class Bullet : MonoBehaviour
 
     public float speed = 15f;
     public Transform target;
-    public float damage = 1f;
+    public int damage = 0;
     public float radius = 0;
 
     // Use this for initialization
     void Start()
     {
-
+        Debug.Log("Bullet is here");
     }
 
     // Update is called once per frame
@@ -37,9 +37,6 @@ public class Bullet : MonoBehaviour
         }
         else
         {
-            // TODO: Consider ways to smooth this motion.
-
-            // Move towards node
             transform.Translate(dir.normalized * distThisFrame, Space.World);
             Quaternion targetRotation = Quaternion.LookRotation(dir);
             this.transform.rotation = Quaternion.Lerp(this.transform.rotation, targetRotation, Time.deltaTime * 5);
@@ -56,33 +53,5 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    /*
-    void DoBulletHit()
-    {
-        // TODO:  What if it's an exploding bullet with an area of effect?
-
-        if (radius == 0)
-        {
-            target.GetComponent<BasicEnemy>().TakeDamage(damage);
-        }
-        else
-        {
-            Collider[] cols = Physics.OverlapSphere(transform.position, radius);
-
-            foreach (Collider c in cols)
-            {
-                Enemy e = c.GetComponent<Enemy>();
-                if (e != null)
-                {
-                    // TODO: You COULD do a falloff of damage based on distance, but that's rare for TD games
-                    e.GetComponent<Enemy>().TakeDamage(damage);
-                }
-            }
-        }
-
-        // TODO: Maybe spawn a cool "explosion" object here?
-
-        Destroy(gameObject);
-    }
-    */
+ 
 }

@@ -36,20 +36,27 @@ public class WaveManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-
         if (spawnNewWave == true)
         {
-            enemyToSpawn_ = enemies[0];
             StartCoroutine(waveSpawn());
             scoreSystem.UpdateScore = true;
         }
 
 	}
 
+    public void setNumEnemiesPerWave()
+    {
+        numEnemiesToSpawn += 5;
+    }
+
     IEnumerator waveSpawn()
     {
         for (uint i = 0; i < numEnemiesToSpawn; i++)
         {
+            int randIDX = Random.Range(0, enemies.Length);
+
+            enemyToSpawn_ = enemies[randIDX];
+
             Instantiate(enemyToSpawn_, spawnPoint.transform.position, spawnPoint.transform.rotation);
             spawnCount_++;
             spawnNewWave = false;

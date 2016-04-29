@@ -17,9 +17,11 @@ public class WorldCubeRotation : MonoBehaviour {
     public GameObject cursor;
     private Vector3 cursorPos = new Vector3();
 
-    public planeDetection planeDet;
+    public planeDetector planeDet;
 
     public int currentPlane = 0;
+
+    public joystickControl cursorScript;
 
 	// Use this for initialization
 	void Start () 
@@ -83,6 +85,7 @@ public class WorldCubeRotation : MonoBehaviour {
             Vector3 rotPos = new Vector3(4.79f, -4.94f, 4.112f);
             Vector3 pos = new Vector3(2.456694f, -2.456694f, 1.9f);
             transform.RotateAround(rotPos, Vector3.forward, 90);
+            cursorScript.resetSelCursor();
          }
 
         //Negative Rotation
@@ -92,6 +95,7 @@ public class WorldCubeRotation : MonoBehaviour {
             Vector3 rotPos = new Vector3(4.79f, -4.94f, 4.112f);
             Vector3 pos = new Vector3(2.456694f, -2.456694f, 1.9f);
             transform.RotateAround(rotPos, Vector3.back, 90);
+            cursorScript.resetSelCursor();
           }
 
          currentTime += delayTime;

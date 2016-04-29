@@ -3,74 +3,181 @@ using System.Collections;
 
 public class Tower : MonoBehaviour {
 
-	// Use this for initialization
+    private float range_;
+    private string type_;
+    private float fireCooldown_;
+    private float fireCooldownLeft_;
+    private int damage_;
+    private string curface_;
 
-	public float range = 10f;
-	public GameObject bulletPrefab;
+    public GameObject nearestEnemy;
+    public GameObject bulletPrefab;
     public Transform pointOfFire;
 
-	public int cost = 5;
+    public string type
+    {
+        get { return type_; }
+        set { type_ = value; }
+    }
 
-	float fireCooldown = 0.5f;
-	float fireCooldownLeft = 0;
+    public float range
+    {
+        get { return range_; }
+        set { range_ = value; }
+    }
 
-	public float damage = 1;
-	public float radius = 0;
+    public int damage
+    {
+        get { return damage_; }
+        set { damage_ = value; }
+    }
 
-    GameObject nearestEnemy; 
+    public float fireCooldown
+    {
+        get { return fireCooldown_; }
+        set { fireCooldown_ = value; }
+    }
+    public float fireCooldownLeft
+    {
+        get { return fireCooldownLeft_; }
+        set { fireCooldownLeft_ = value; }
+    }
+    public string CurFace
+    {
+        get { return curface_; }
+        set { curface_ = value; }
+    }
 
-	// Use this for initialization
-	void Start () {
+    public void searchEnemies()
+    {
+        /*GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+        //float dist = 5.0f;
+
+        //Choose closest
+        foreach (GameObject e in enemies)
+        {
+            float d = Vector3.Distance(this.transform.position, e.transform.position);
+            if (nearestEnemy == null || d < range && e.GetComponent<BasicEnemy>().currFace == curface_)
+            {
+                nearestEnemy = e;
+                range = d;
+            }
+        }
+
+        //If enemies exist
+        if (nearestEnemy == null)
+        {
+            return;
+        }
+        */
+
+        pickNewEnemy();
+
+        //Vector3 dir = nearestEnemy.transform.position - this.transform.position;
+
+        if (nearestEnemy == null)
+        {
+            pickNewEnemy();
+        }
+
+       // this.transform.rotation = newRot;
+        fireCooldownLeft -= Time.deltaTime;
+
+        //&& current face == enenmy current face
+
+        if (nearestEnemy.name == "BasicEnemy(Clone)")
+        {
+            Debug.Log("BASIC ENEMY IS NEAREST");
 
 
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		// TODO: Optimize this!
-		//Enemy[] enemies = GameObject.FindObjectsOfType<Enemy>();
+            if (fireCooldownLeft <= 0 && curface_ == nearestEnemy.GetComponent<BasicEnemy>().currFace)
+            {
+                fireCooldownLeft = fireCooldown;
+                //this.transform.Rotate(size, 90); //Quaternion.Euler(0, lookRot.eulerAngles.y, 0);
+                ShootAt(nearestEnemy);
+                Debug.Log("SHOOT");
+            }
+        }
+        if (nearestEnemy.name == "SpeedEnemy(Clone)")
+        {
+
+            Debug.Log("SPEED ENEMY IS NEAREST");
+
+            if (fireCooldownLeft <= 0 && curface_ == nearestEnemy.GetComponent<SpeedEnemy>().currFace)
+            {
+                fireCooldownLeft = fireCooldown;
+                //this.transform.Rotate(size, 90); //Quaternion.Euler(0, lookRot.eulerAngles.y, 0);
+                ShootAt(nearestEnemy);
+                Debug.Log("SHOOT");
+            }
+        }
+        if (nearestEnemy.name == "StrongEnemy(Clone)")
+        {
+
+            Debug.Log("STRONG ENEMY IS NEAREST");
+
+            if (fireCooldownLeft <= 0 && curface_ == nearestEnemy.GetComponent<StrongEnemy>().currFace)
+            {
+                fireCooldownLeft = fireCooldown;
+                //this.transform.Rotate(size, 90); //Quaternion.Euler(0, lookRot.eulerAngles.y, 0);
+                ShootAt(nearestEnemy);
+                Debug.Log("SHOOT");
+            }
+        }
+
+    }
+
+    void pickNewEnemy()
+    {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
 
+        //float dist = 5.0f;
 
-		//Enemy nearestEnemy = null;
-        //GameObject nearestEnemy = null;
-		float dist = Mathf.Infinity;
+        //Choose closest
+        foreach (GameObject e in enemies)
+        {
+            float d = Vector3.Distance(this.transform.position, e.transform.position);
+            
+            switch(e.name){
+                case "BasicEnemy(Clone)":
+                    if (e.GetComponent<BasicEnemy>().currFace == curface_)
+                    {
+                        nearestEnemy = e;
+                        range = d;
+                    }
+                break;
 
-		foreach(GameObject e in enemies) {
-			float d = Vector3.Distance(this.transform.position, e.transform.position);
-			if(nearestEnemy == null || d < dist) {
-				nearestEnemy = e;
-				dist = d;
-			}
-		}
+                case "SpeedEnemy(Clone)":
+                    if (e.GetComponent<SpeedEnemy>().currFace == curface_)
+                    {
+                        nearestEnemy = e;
+                        range = d;
+                    }
+                    break;
 
-		if(nearestEnemy == null) {
-			Debug.Log("No enemies?");
-			return;
-		}
+                case "StrongEnemy(Clone)":
+                    if (e.GetComponent<StrongEnemy>().currFace == curface_)
+                    {
+                        nearestEnemy = e;
+                        range = d;
+                    }
+                    break;
 
-		Vector3 dir = nearestEnemy.transform.position - this.transform.position;
+            }
+            
+        }
+    }
 
-		Quaternion lookRot = Quaternion.LookRotation( dir );
-
-		//Debug.Log(lookRot.eulerAngles.y);
-		this.transform.rotation = Quaternion.Euler( 0, lookRot.eulerAngles.y, 0 );
-
-		fireCooldownLeft -= Time.deltaTime;
-		if(fireCooldownLeft <= 0 && dir.magnitude <= range) {
-			fireCooldownLeft = fireCooldown;
-			ShootAt(nearestEnemy);
-		}
-
-	}
-
-	void ShootAt(GameObject e) {
-		// TODO: Fire out the tip!
+    void ShootAt(GameObject e)
+    {
+        // TODO: Fire out the tip!
         GameObject bulletGO = (GameObject)Instantiate(bulletPrefab, pointOfFire.position, this.transform.rotation);
-
-		Bullet b = bulletGO.GetComponent<Bullet>();
-		b.target = e.transform;
-		b.damage = damage;
-		b.radius = radius;
-	}
+        Debug.Log("Shot a Bullet");
+        Bullet b = bulletGO.GetComponent<Bullet>();
+        b.target = e.transform;
+        b.damage = damage_;
+        b.radius = range_;
+    }
+   
 }

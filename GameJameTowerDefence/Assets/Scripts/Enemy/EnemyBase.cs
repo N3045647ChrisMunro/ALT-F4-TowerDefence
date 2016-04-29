@@ -9,6 +9,7 @@ public class EnemyBase : MonoBehaviour{
     private string type_;
     private int health_;
     private float moveSpeed_;
+    private string currFace_;
     private List<Transform> wayPoints_;
 
     public string type
@@ -34,6 +35,12 @@ public class EnemyBase : MonoBehaviour{
         get { return wayPoints_; }
         set { wayPoints_ = value; }
     }
+
+    public string currFace
+    {
+        get { return currFace_; }
+        set { currFace_ = value; }
+    } 
 
     public EnemyBase() 
     {
