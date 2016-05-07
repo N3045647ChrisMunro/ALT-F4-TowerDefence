@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class WaveManager : MonoBehaviour {
 
-    //KRISTINA was here
+    //KRISTINA was here 2k16
     public ScoreSystem scoreSystem;
 
     //TODO: This entire Script could be nicer
@@ -11,57 +12,123 @@ public class WaveManager : MonoBehaviour {
     public Grid grid;
 
     private GameObject spawnPoint;
-   
+
     public GameObject[] enemies;
+    public List<GameObject[]> waves;
+    public int waveCount;
     public bool spawnNewWave;
-    public int numEnemiesToSpawn;
+    public bool waveActive;
+    public bool canSpawnWave;
 
     private float spawnDelay_ = 0.5f;
 
     private GameObject enemyToSpawn_;
-    private int spawnCount_ = 0;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
 
         spawnPoint = new GameObject();
 
         spawnPoint.transform.position = grid.waypoints[0].transform.localPosition;
         spawnPoint.transform.rotation = grid.waypoints[0].transform.rotation;
 
+        waves = new List<GameObject[]>();
         //Initializing Score system
         scoreSystem = GameObject.FindGameObjectWithTag("Manager").GetComponent<ScoreSystem>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
 
-        if (spawnNewWave == true)
-        {
-            StartCoroutine(waveSpawn());
-            scoreSystem.UpdateScore = true;
-        }
+        canSpawnWave = true;
+        waveCount = 1;
 
-	}
+        //First 5 wave
+        //createWave(10, 0, 0);
+        //createWave(10, 3, 0);
+        createWave(8, 5, 2);
+       /* createWave(25, 10, 0);
+        createWave(25, 10, 1);
 
-    public void setNumEnemiesPerWave()
-    {
-        numEnemiesToSpawn += 5;
+        //5 - 10
+        createWave(40, 20, 0);
+        createWave(45, 25, 2);
+        createWave(60, 40, 8);
+        createWave(40, 30, 15);
+        createWave(80, 50, 20);*/
+
     }
 
-    IEnumerator waveSpawn()
+    // Update is called once per frame
+    void Update()
     {
-        for (uint i = 0; i < numEnemiesToSpawn; i++)
+        if (canSpawnWave == true)
         {
-            int randIDX = Random.Range(0, enemies.Length);
+            if (spawnNewWave == true)
+            {
+                canSpawnWave = false;
+                StartCoroutine(waveSpawn(waveCount));
+                scoreSystem.UpdateScore = true;
+            }
+        }
 
-            enemyToSpawn_ = enemies[randIDX];
+        GameObject[] activeEnemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+        if (activeEnemies.Length > 0)
+        {
+            waveActive = true;
+            canSpawnWave = false;
+        }
+        else
+        {
+            waveActive = false;
+            canSpawnWave = true;
+        }
+
+    }
+
+    IEnumerator waveSpawn(int waveNumber)
+    {
+        GameObject[] waveArray = waves[waveNumber - 1];
+
+        for (uint i = 0; i < waveArray.Length; i++)
+        {
+            enemyToSpawn_ = waveArray[i];
 
             Instantiate(enemyToSpawn_, spawnPoint.transform.position, spawnPoint.transform.rotation);
-            spawnCount_++;
             spawnNewWave = false;
+
             yield return new WaitForSeconds(spawnDelay_);
         }
+        waveCount++;
+
     }
 
+    public void createWave(int numOfBasic, int numOfSpeed, int numOfStrong)
+    {
+        int totalWaveSize = numOfBasic + numOfSpeed + numOfStrong;
+
+        //Create the array to hold all enemies for this wave
+        GameObject[] waveArray = new GameObject[totalWaveSize];
+
+        int idx = 0;
+
+        //Add the basic enemies to the array
+        for (int i = 0; i < numOfBasic; i++)
+        {
+            waveArray[idx] = enemies[0];
+            idx++;
+        }
+        //Add the speed enemies to the array
+        for (int i = 0; i < numOfSpeed; i++)
+        {
+            waveArray[idx] = enemies[1];
+            idx++;
+        }
+        //Add the strong enemies to the array
+        for (int i = 0; i < numOfStrong; i++)
+        {
+            waveArray[idx] = enemies[2];
+            idx++;
+        }
+
+        waves.Add(waveArray);
+    }
 }

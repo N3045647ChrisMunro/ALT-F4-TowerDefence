@@ -48,7 +48,7 @@ public class joystickControl : MonoBehaviour {
     //Turret
     public GameObject turret;
     public GameObject parentCube;
-    public GameObject newTurret;
+    public GameObject upgradeTurret;
 
     //Score
     public ScoreSystem scoreSystem;
@@ -63,6 +63,14 @@ public class joystickControl : MonoBehaviour {
     //Waves
     public WaveManager waveManager;
 
+    //Turret Menu
+    turretMenu towerMenu;
+    public GameObject subMenu;
+    private bool menuActive = false;
+
+    //Audio
+    public GameObject audioMangr;
+
     void Start()
     {
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
@@ -76,13 +84,19 @@ public class joystickControl : MonoBehaviour {
         //Score system
         scoreSystem = GameObject.FindGameObjectWithTag("Manager").GetComponent<ScoreSystem>();
 
+        //Turret menu
+        towerMenu = GetComponent<turretMenu>();
+
+        //Audio
+        audioMangr = GameObject.FindGameObjectWithTag("Audio");
+
     }
 
 	// Update is called once per frame
 	void Update ()
     {
         waveManager.spawnNewWave = false;
-        if (curTime <= 0.2f)
+        if (curTime <= 0.2f && currentCurs!=null)
         {
             moveCursor();
             curTime = timeInterval;
@@ -211,20 +225,18 @@ public class joystickControl : MonoBehaviour {
                 Renderer rend = newProj.GetComponent<Renderer>();
                 rend.sharedMaterial.color = Color.red;
 
-                Debug.Log("LALALA");
-
                 currentTile = null;
             }
 
             //OVER TURRET
             if(hit.collider.tag=="Turret" && selectingTurret)
             {
-
                 deleteProjection();
                 GameObject Turret = hit.collider.gameObject;
                 selParticles.SetActive(true);
                 currentTurret = hit.collider.gameObject;
             }
+
         }
     }
 
@@ -297,11 +309,26 @@ public class joystickControl : MonoBehaviour {
 
         if(triggerOn && triggerOff)
         {
-            if (currentCurs == selectionCurs)
-                onSelectCursorClick();
+            audioMangr = GameObject.FindGameObjectWithTag("Audio");
+            //Sound
+            if (audioMangr.activeSelf)
+            {
+                inGameAudio gameAudio = audioMangr.GetComponent<inGameAudio>();
+                gameAudio.selectSource.Play();
+            }
 
-            if (currentCurs == menuCurs)
-                onMenuCursorClick();
+            //Functionality
+            if (menuActive)                         //sub menu
+                onTurretSelect();
+            else
+            {
+                if (currentCurs == selectionCurs)
+                    onSelectCursorClick();
+
+                if (currentCurs == menuCurs)
+                    onMenuCursorClick();
+            }
+            
         }
 
     }
@@ -334,37 +361,51 @@ public class joystickControl : MonoBehaviour {
     //SELECTION CURSOR ACTIVE
     void onSelectCursorClick()
     {
-        if (!selectingTurret && currentTile !=null)
+        if (scoreSystem.buyTurret())
         {
-            GameObject newTurret = Instantiate(turret, currentTile.transform.position, turret.transform.rotation) as GameObject;
+            Debug.Log(selectingTurret);
+            if (!selectingTurret && currentTile != null)
+            {
+                GameObject newTurret = Instantiate(turret, currentTile.transform.position, turret.transform.rotation) as GameObject;
 
-            currentTile.tag = "UsedTile";
+                currentTile.tag = "UsedTile";
 
-            Vector3 turretPos = currentTile.transform.position;
-            turretPos.x += 0.646f;
-            turretPos.z -= 0.35f;
-            float sizeY = newTurret.GetComponent<BoxCollider>().bounds.size.y;
-            Debug.Log(sizeY);
-            turretPos.y += sizeY;
+                turretOffset offset = newTurret.GetComponent<turretOffset>();
+                Vector3 turretPos = currentTile.transform.position;
+                turretPos.x += offset.xOffset;
+                turretPos.z -= offset.zOffset;
+                float sizeY = newTurret.GetComponent<BoxCollider>().bounds.size.y;
+                turretPos.y += sizeY;
 
-            newTurret.transform.parent = parentCube.transform;
-            newTurret.transform.position = turretPos;
+                newTurret.transform.parent = parentCube.transform;
+                newTurret.transform.position = turretPos;
 
-            deleteProjection();
-            cursorChange();
+                deleteProjection();
+                cursorChange();
 
-            currentTile = null;
+                currentTile = null;
+            }
+
+            if(selectingTurret)
+            {
+                deleteProjection();
+                if (currentTurret != null)
+                {
+                    Transform prevTransform = currentTurret.transform;
+                    turretOffset upgrManager = currentTurret.GetComponent<turretOffset>();
+                    GameObject newTurr = upgrManager.UpgradeTurret(prevTransform);
+
+                    if (newTurr != null)
+                    {
+                        newTurr.transform.parent = parentCube.transform;
+                        Destroy(currentTurret);
+                    }
+                }
+                cursorChange();
+            }
         }
         else
         {
-            deleteProjection();
-            if (currentTurret != null)
-            {
-                Vector3 pos = currentTurret.transform.position;
-                Destroy(currentTurret);
-                GameObject newTurr = Instantiate(newTurret, pos, cursorProjection.transform.rotation) as GameObject;
-                newTurr.transform.parent = parentCube.transform;
-            }
             cursorChange();
         }
     }
@@ -386,16 +427,21 @@ public class joystickControl : MonoBehaviour {
                 //BUY TURRET
                 if (hit.collider.name == "buyTurret")
                 {
+                    if (!menuActive)
+                    {
+                        menuActive = true;
+                        subMenu.SetActive(true);
+                        currentCurs = null;
+                        menuCurs.transform.position = initialMenCursPos;
+                    }
                     selectingTurret = false;
-                    if (scoreSystem.buyTurret())
-                        cursorChange();
-                    else
-                        Debug.Log("Not eneough money");
+                         
                 }
 
                 //UPGRADE TURRET
                 if (hit.collider.name == "upgrade")
                 {
+                    Debug.Log("attempt to upgrade");
                     selectingTurret = true;
                     cursorChange();
                 }
@@ -403,8 +449,15 @@ public class joystickControl : MonoBehaviour {
                 //WAVE SPAWN
                 if (hit.collider.name == "waveSpawn")
                 {
-                    waveManager.setNumEnemiesPerWave();
                     waveManager.spawnNewWave = true;
+
+                    //Sound
+                    audioMangr = GameObject.FindGameObjectWithTag("Audio");
+                    if (audioMangr.activeSelf)
+                    {
+                        inGameAudio gameAudio = audioMangr.GetComponent<inGameAudio>();
+                        gameAudio.waveSource.Play();
+                    }
                 }
             }
         }
@@ -417,4 +470,18 @@ public class joystickControl : MonoBehaviour {
         triggerOff = false;
         triggerOn = false;
     }
+
+    void onTurretSelect()
+    {
+        menuActive = false;
+        subMenu.SetActive(false);
+        currentCurs = menuCurs;
+
+        triggerOff = false;
+        triggerOn = false;
+
+        turret = towerMenu.getTurret();
+        cursorChange();
+    }
+
 }

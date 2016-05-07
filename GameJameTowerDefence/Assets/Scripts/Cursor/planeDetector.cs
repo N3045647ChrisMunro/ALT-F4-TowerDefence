@@ -17,7 +17,6 @@ public class planeDetector : MonoBehaviour
     void Update()
     {
         currentPlane = faceDetection();
-        Debug.Log(currentPlane);
     }
 
     public string faceDetection()
@@ -27,7 +26,6 @@ public class planeDetector : MonoBehaviour
         rayOrigin = this.transform.position;
 
         Ray cursorRay = new Ray(rayOrigin, Vector3.down);  //Create a ray with cursor as an origin and down as a direction
-        Debug.DrawRay(rayOrigin, Vector3.down, Color.black, 20);
 
         if (Physics.Raycast(cursorRay, out hit))                     //If something was hit
         {

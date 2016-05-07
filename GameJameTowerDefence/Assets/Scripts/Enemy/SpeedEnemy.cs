@@ -8,13 +8,14 @@ public class SpeedEnemy : EnemyBase {
 
     public ScoreSystem scoreSystem;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
 
         this.transform.SetParent(GameObject.FindGameObjectWithTag("WorldCube").transform, false);
 
         this.type = "speed";
-        this.health = 25;
+        this.health = 10;
         this.moveSpeed = 4.0f;
 
         //This finds the Gameobject in the scene that hold all the waypoints
@@ -24,12 +25,13 @@ public class SpeedEnemy : EnemyBase {
         this.wayPoints = waypointScript.GetComponent<Grid>().waypoints;
 
         //Initializing Score system
-        scoreSystem = GameObject.FindGameObjectWithTag("Manager").GetComponent<ScoreSystem>();
+        this.gameManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<ScoreSystem>();
 
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
 
         if (currentWaypoint < this.wayPoints.Count)
         {
@@ -52,8 +54,7 @@ public class SpeedEnemy : EnemyBase {
 
         if (health <= 0)
         {
-            scoreSystem.UpdateGold = true;
-            Debug.Log("Enemy died");
+            gameManager.UpdateGold = true;
             Destroy(this.gameObject);
         }
 
@@ -73,8 +74,10 @@ public class SpeedEnemy : EnemyBase {
         {
             this.currFace = "NearPlane";
         }
-	
-	}
+
+        fixRotation();
+
+    }
 
     public override void move()
     {
@@ -100,13 +103,19 @@ public class SpeedEnemy : EnemyBase {
         }
 
     }
-
     void OnCollisionEnter(Collision col)
     {
         if (col.gameObject.tag == "Bullet")
         {
-            Debug.Log("GOT HIT");
             health -= 5;
+        }
+        if (col.gameObject.tag == "Slow")
+        {
+            applySlow();
+        }
+        if (col.gameObject.tag == "Core")
+        {
+            gameManager.playerHealth--;
         }
     }
 

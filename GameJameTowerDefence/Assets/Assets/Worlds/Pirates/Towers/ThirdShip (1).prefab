@@ -368,6 +368,8 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 445508}
+  - 114: {fileID: 11448058}
+  - 65: {fileID: 6520486}
   m_Layer: 0
   m_Name: ThirdShip (1)
   m_TagString: Turret
@@ -573,6 +575,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &192916
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 409324}
+  m_Layer: 0
+  m_Name: PointOfFire
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &196610
 GameObject:
   m_ObjectHideFlags: 0
@@ -672,6 +689,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 445508}
   m_RootOrder: 10
+--- !u!4 &409324
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 192916}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.003, y: -0.212, z: -0.104}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 445508}
+  m_RootOrder: 16
 --- !u!4 &417248
 Transform:
   m_ObjectHideFlags: 1
@@ -841,7 +870,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 162744}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -57.563267, y: -13.881056, z: -20.081532}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 429312}
@@ -860,6 +889,7 @@ Transform:
   - {fileID: 492756}
   - {fileID: 477704}
   - {fileID: 422706}
+  - {fileID: 409324}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!4 &446090
@@ -1975,6 +2005,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &6520486
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 162744}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.44, y: 0.7, z: 0.48}
+  m_Center: {x: -0.32, y: -0.31, z: 0.11}
 --- !u!65 &6549158
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -2344,6 +2386,20 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &11448058
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 162744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7620afe6af39dc4788540143d05f8a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nearestEnemy: {fileID: 0}
+  bulletPrefab: {fileID: 104682, guid: b4a943a2068adf3439fd43f164b1f73b, type: 2}
+  pointOfFire: {fileID: 0}
 --- !u!136 &13609330
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -2389,7 +2445,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: bulletPrefab
+      value: 
+      objectReference: {fileID: 104682, guid: b4a943a2068adf3439fd43f164b1f73b, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 162744}

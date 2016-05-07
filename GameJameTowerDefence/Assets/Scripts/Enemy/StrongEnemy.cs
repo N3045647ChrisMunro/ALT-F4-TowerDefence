@@ -25,7 +25,7 @@ public class StrongEnemy : EnemyBase {
         this.wayPoints = waypointScript.GetComponent<Grid>().waypoints;
 
         //Initializing Score system
-        scoreSystem = GameObject.FindGameObjectWithTag("Manager").GetComponent<ScoreSystem>();
+        this.gameManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<ScoreSystem>();
 
     }
 
@@ -54,8 +54,7 @@ public class StrongEnemy : EnemyBase {
 
         if (health <= 0)
         {
-            scoreSystem.UpdateGold = true;
-            Debug.Log("Enemy died");
+            gameManager.UpdateGold = true;
             Destroy(this.gameObject);
         }
 
@@ -75,6 +74,8 @@ public class StrongEnemy : EnemyBase {
         {
             this.currFace = "NearPlane";
         }
+
+        fixRotation();
 
     }
 
@@ -102,13 +103,19 @@ public class StrongEnemy : EnemyBase {
         }
 
     }
-
     void OnCollisionEnter(Collision col)
     {
         if (col.gameObject.tag == "Bullet")
         {
-            Debug.Log("GOT HIT");
             health -= 5;
+        }
+        if (col.gameObject.tag == "Slow")
+        {
+            applySlow();
+        }
+        if (col.gameObject.tag == "Core")
+        {
+            gameManager.playerHealth--;
         }
     }
 }

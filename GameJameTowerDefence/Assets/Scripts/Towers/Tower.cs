@@ -10,9 +10,15 @@ public class Tower : MonoBehaviour {
     private int damage_;
     private string curface_;
 
-    public GameObject nearestEnemy;
+    private GameObject nearestEnemy_;
     public GameObject bulletPrefab;
     public Transform pointOfFire;
+    public WaveManager waveManager;
+
+    private Transform towerTransform;
+    public Vector3 TowerRotPoint;
+
+    public planeDetector planeDetector;
 
     public string type
     {
@@ -50,134 +56,170 @@ public class Tower : MonoBehaviour {
 
     public void searchEnemies()
     {
-        /*GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        waveManager = GameObject.Find("WaveManager").GetComponent<WaveManager>();
 
-        //float dist = 5.0f;
-
-        //Choose closest
-        foreach (GameObject e in enemies)
-        {
-            float d = Vector3.Distance(this.transform.position, e.transform.position);
-            if (nearestEnemy == null || d < range && e.GetComponent<BasicEnemy>().currFace == curface_)
-            {
-                nearestEnemy = e;
-                range = d;
-            }
-        }
-
-        //If enemies exist
-        if (nearestEnemy == null)
-        {
-            return;
-        }
-        */
-
-        pickNewEnemy();
-
-        //Vector3 dir = nearestEnemy.transform.position - this.transform.position;
-
-        if (nearestEnemy == null)
+        if (waveManager.waveActive == true)
         {
             pickNewEnemy();
-        }
 
-       // this.transform.rotation = newRot;
-        fireCooldownLeft -= Time.deltaTime;
-
-        //&& current face == enenmy current face
-
-        if (nearestEnemy.name == "BasicEnemy(Clone)")
-        {
-            Debug.Log("BASIC ENEMY IS NEAREST");
-
-
-            if (fireCooldownLeft <= 0 && curface_ == nearestEnemy.GetComponent<BasicEnemy>().currFace)
+            if (nearestEnemy_ == null)
             {
-                fireCooldownLeft = fireCooldown;
-                //this.transform.Rotate(size, 90); //Quaternion.Euler(0, lookRot.eulerAngles.y, 0);
-                ShootAt(nearestEnemy);
-                Debug.Log("SHOOT");
+                pickNewEnemy();
+            }
+            else
+            {
+                // this.transform.rotation = newRot;
+                fireCooldownLeft -= Time.deltaTime;
+
+                float d = Vector3.Distance(this.transform.position, nearestEnemy_.transform.position);
+
+                if (d <= range_)
+                {          
+                    if (nearestEnemy_.name == "BasicEnemy(Clone)")
+                    {
+                        if (fireCooldownLeft <= 0 && curface_ == nearestEnemy_.GetComponent<BasicEnemy>().currFace)
+                        {
+                            fireCooldownLeft = fireCooldown;
+                            Rotation(nearestEnemy_);
+                            ShootAt(nearestEnemy_);
+                        }
+                    }
+                    if (nearestEnemy_.name == "SpeedEnemy(Clone)")
+                    {
+                        if (fireCooldownLeft <= 0 && curface_ == nearestEnemy_.GetComponent<SpeedEnemy>().currFace)
+                        {
+                            fireCooldownLeft = fireCooldown;
+                            Rotation(nearestEnemy_);
+                            ShootAt(nearestEnemy_);
+                        }
+                    }
+                    if (nearestEnemy_.name == "StrongEnemy(Clone)")
+                    {
+                        if (fireCooldownLeft <= 0 && curface_ == nearestEnemy_.GetComponent<StrongEnemy>().currFace)
+                        {
+                            fireCooldownLeft = fireCooldown;
+                            Rotation(nearestEnemy_);
+                            ShootAt(nearestEnemy_);
+                        }
+                    }
+                }
+                else
+                {
+                    pickNewEnemy();
+                }
             }
         }
-        if (nearestEnemy.name == "SpeedEnemy(Clone)")
-        {
-
-            Debug.Log("SPEED ENEMY IS NEAREST");
-
-            if (fireCooldownLeft <= 0 && curface_ == nearestEnemy.GetComponent<SpeedEnemy>().currFace)
-            {
-                fireCooldownLeft = fireCooldown;
-                //this.transform.Rotate(size, 90); //Quaternion.Euler(0, lookRot.eulerAngles.y, 0);
-                ShootAt(nearestEnemy);
-                Debug.Log("SHOOT");
-            }
-        }
-        if (nearestEnemy.name == "StrongEnemy(Clone)")
-        {
-
-            Debug.Log("STRONG ENEMY IS NEAREST");
-
-            if (fireCooldownLeft <= 0 && curface_ == nearestEnemy.GetComponent<StrongEnemy>().currFace)
-            {
-                fireCooldownLeft = fireCooldown;
-                //this.transform.Rotate(size, 90); //Quaternion.Euler(0, lookRot.eulerAngles.y, 0);
-                ShootAt(nearestEnemy);
-                Debug.Log("SHOOT");
-            }
-        }
-
     }
 
     void pickNewEnemy()
     {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
 
-        //float dist = 5.0f;
-
         //Choose closest
         foreach (GameObject e in enemies)
         {
-            float d = Vector3.Distance(this.transform.position, e.transform.position);
-            
-            switch(e.name){
+            switch (e.name)
+            {
                 case "BasicEnemy(Clone)":
                     if (e.GetComponent<BasicEnemy>().currFace == curface_)
                     {
-                        nearestEnemy = e;
-                        range = d;
+                        nearestEnemy_ = e;
                     }
-                break;
+                    break;
 
                 case "SpeedEnemy(Clone)":
                     if (e.GetComponent<SpeedEnemy>().currFace == curface_)
                     {
-                        nearestEnemy = e;
-                        range = d;
+                        nearestEnemy_ = e;
                     }
                     break;
 
                 case "StrongEnemy(Clone)":
                     if (e.GetComponent<StrongEnemy>().currFace == curface_)
                     {
-                        nearestEnemy = e;
-                        range = d;
+                        nearestEnemy_ = e;
                     }
                     break;
-
             }
-            
+
         }
     }
-
     void ShootAt(GameObject e)
     {
         // TODO: Fire out the tip!
         GameObject bulletGO = (GameObject)Instantiate(bulletPrefab, pointOfFire.position, this.transform.rotation);
-        Debug.Log("Shot a Bullet");
         Bullet b = bulletGO.GetComponent<Bullet>();
         b.target = e.transform;
         b.damage = damage_;
         b.radius = range_;
     }
-   
+
+    public void Rotation(GameObject nearestEnemy)
+   {
+       TowerRotPoint = this.GetComponent<Collider>().bounds.center;
+       
+       towerTransform = this.transform;
+
+       Vector3 dir = nearestEnemy.transform.position - this.transform.position;
+       Quaternion lookRot = Quaternion.LookRotation(dir);
+
+     
+
+       this.planeDetector = GameObject.Find("PlaneDetector").GetComponent<planeDetector>();
+
+       string worldCurrentFace = planeDetector.currentPlane;
+
+       if (CurFace == "TopPlane" && worldCurrentFace == "FarPlane")
+       {
+           TowerRotPoint.x = lookRot.eulerAngles.y + 90;
+           TowerRotPoint.y = 0f;
+           TowerRotPoint.z = -90f;
+       }
+       if (CurFace == "TopPlane" && worldCurrentFace == "NearPlane")
+       {
+           TowerRotPoint.x = lookRot.eulerAngles.y + -90;
+           TowerRotPoint.y = 0f;
+           TowerRotPoint.z = 90f;
+       }
+       if (CurFace == "FarPlane" && worldCurrentFace == "TopPlane")
+       {
+           TowerRotPoint.x = lookRot.eulerAngles.y + -90;
+           TowerRotPoint.y = 0f;
+           TowerRotPoint.z = 90f;
+       }
+       if (CurFace == "FarPlane" && worldCurrentFace == "BotPlane")
+       {
+           TowerRotPoint.x = lookRot.eulerAngles.y + 90;
+           TowerRotPoint.y = 0f;
+           TowerRotPoint.z = -90f;
+       }
+       if (CurFace == "TopPlane" && worldCurrentFace == "BotPlane")
+       {
+           TowerRotPoint.x = lookRot.eulerAngles.y + 90;
+           TowerRotPoint.y = 0f;
+           TowerRotPoint.z = -90f;
+       }
+       if (CurFace == "NearPlane" && worldCurrentFace == "BotPlane")
+       {
+           TowerRotPoint.x = lookRot.eulerAngles.y + 180;
+           TowerRotPoint.y = 0f;
+           TowerRotPoint.z = 90f;
+       }
+       if (CurFace == "BotPlane" && worldCurrentFace == "FarPlane")
+       {
+           TowerRotPoint.x = -lookRot.eulerAngles.y + -90;
+           TowerRotPoint.y = 0f;
+           TowerRotPoint.z = 90f;
+       }
+       else if (CurFace == worldCurrentFace)
+       {
+           TowerRotPoint.x = 0f;
+           TowerRotPoint.y = lookRot.eulerAngles.y + 90;
+           TowerRotPoint.z = 0f;
+       }
+
+       towerTransform.rotation = Quaternion.Euler(TowerRotPoint);
+       
+   }
 }
+

@@ -189,7 +189,7 @@ public class Grid : MonoBehaviour
                         //READING TOP Plane Waypoint information
                         if (line == "Top")
                         {
-                            Debug.Log("GOT TO TOP:" + waypointTracker);
+
 
                         }
                         else
@@ -225,7 +225,7 @@ public class Grid : MonoBehaviour
 
                         if (line == "Far")
                         {
-                            Debug.Log("GOT TO FAR:" + waypointTracker);
+
 
                         }
                         else
@@ -265,7 +265,7 @@ public class Grid : MonoBehaviour
 
                         if (line == "Bot")
                         {
-                            Debug.Log("GOT TO Bot:" + waypointTracker);
+
 
                         }
                         else
@@ -305,7 +305,7 @@ public class Grid : MonoBehaviour
 
                         if (line == "Near")
                         {
-                            Debug.Log("GOT TO Near:" + waypointTracker);
+
 
                         }
                         else

@@ -6,9 +6,9 @@ public class SecondTower : Tower {
 	// Use this for initialization
 	void Start () {
         this.type = "SecondLightTower";
-        this.damage = 10;
-        this.range =  15.0f;
-        this.fireCooldown = 0.25f;
+        this.damage = 8;
+        this.range =  3f;
+        this.fireCooldown = 0.35f;
         this.fireCooldownLeft = fireCooldown;
 
         this.CurFace = GameObject.Find("PlaneDetector").GetComponent<planeDetector>().currentPlane;

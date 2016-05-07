@@ -7,15 +7,15 @@ public class BasicEnemy : EnemyBase{
     Transform targetWaypoint;
 
     //KRISTINA was here
-    public ScoreSystem scoreSystem;
+    //public ScoreSystem scoreSystem;
 
-	// Use this for initialization
+    // Use this for initialization
     void Start()
     {
         this.transform.SetParent(GameObject.FindGameObjectWithTag("WorldCube").transform, false);
 
         this.type = "basic";
-        this.health = 10;
+        this.health = 5;
         this.moveSpeed = 2.5f;
 
         //This finds the Gameobject in the scene that hold all the waypoints
@@ -25,15 +25,15 @@ public class BasicEnemy : EnemyBase{
         this.wayPoints = waypointScript.GetComponent<Grid>().waypoints;
 
         //Initializing Score system
-        scoreSystem = GameObject.FindGameObjectWithTag("Manager").GetComponent<ScoreSystem>();
+        this.gameManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<ScoreSystem>();
     }
-	
-	// Update is called once per frame
+
+    // Update is called once per frame
 
     void Update()
     {
-        
-       if (currentWaypoint < this.wayPoints.Count)
+
+        if (currentWaypoint < this.wayPoints.Count)
         {
             if (targetWaypoint == null)
             {
@@ -42,7 +42,7 @@ public class BasicEnemy : EnemyBase{
         }
 
         //check to see if we hit the last waypoint
-       if (currentWaypoint >= this.wayPoints.Count)
+        if (currentWaypoint >= this.wayPoints.Count)
         {
             currentWaypoint = 0;
             Destroy(this.gameObject);
@@ -54,7 +54,7 @@ public class BasicEnemy : EnemyBase{
 
         if (health <= 0)
         {
-            scoreSystem.UpdateGold = true;
+            gameManager.UpdateGold = true;
             Destroy(this.gameObject);
         }
 
@@ -75,14 +75,13 @@ public class BasicEnemy : EnemyBase{
             this.currFace = "NearPlane";
         }
 
-        Debug.Log("Curr Face: " + this.currFace);
-
+        fixRotation();
     }
 
     public override void move()
     {
         //Rotate to target 
-        transform.forward = Vector3.RotateTowards(transform.forward, targetWaypoint.position - transform.position, 4f * Time.deltaTime, 0.0f); 
+        transform.forward = Vector3.RotateTowards(transform.forward, targetWaypoint.position - transform.position, 4f * Time.deltaTime, 0.0f);
 
         //Move towards the next waypoints position
         transform.position = Vector3.MoveTowards(transform.position, targetWaypoint.position, this.moveSpeed * Time.deltaTime);
@@ -103,14 +102,19 @@ public class BasicEnemy : EnemyBase{
         }
 
     }
-
     void OnCollisionEnter(Collision col)
     {
         if (col.gameObject.tag == "Bullet")
         {
-
-            Debug.Log("GOT HIT");
             health -= col.gameObject.GetComponent<Bullet>().damage;
+        }
+        if (col.gameObject.tag == "Slow")
+        {
+            applySlow();
+        }
+        if (col.gameObject.tag == "Core")
+        {
+            gameManager.playerHealth--;
         }
     }
 

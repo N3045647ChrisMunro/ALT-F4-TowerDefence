@@ -8,11 +8,14 @@ public class Bullet : MonoBehaviour
     public Transform target;
     public int damage = 0;
     public float radius = 0;
+    public int AOEdamage = 8;
+    public string type;
+
+    public GameObject AOE;
 
     // Use this for initialization
     void Start()
     {
-        Debug.Log("Bullet is here");
     }
 
     // Update is called once per frame
@@ -33,7 +36,7 @@ public class Bullet : MonoBehaviour
         if (dir.magnitude <= distThisFrame)
         {
             // We reached the node
-           // DoBulletHit();
+            // DoBulletHit();
         }
         else
         {
@@ -48,10 +51,14 @@ public class Bullet : MonoBehaviour
     {
         if (col.gameObject.tag == "Enemy")
         {
-            Debug.Log("BULLET HIT ENEMY");
+            if (type == "AOE")
+            {
+                GameObject Aoe = Instantiate(AOE, transform.position, transform.rotation) as GameObject;
+            }
+
             Destroy(this.gameObject);
         }
     }
 
- 
+
 }
