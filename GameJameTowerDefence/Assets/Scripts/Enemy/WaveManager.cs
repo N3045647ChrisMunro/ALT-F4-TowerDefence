@@ -41,10 +41,10 @@ public class WaveManager : MonoBehaviour {
         waveCount = 1;
 
         //First 5 wave
-        //createWave(10, 0, 0);
-        //createWave(10, 3, 0);
+        createWave(10, 0, 0);
+        createWave(10, 3, 0);
         createWave(8, 5, 2);
-       /* createWave(25, 10, 0);
+        createWave(25, 10, 0);
         createWave(25, 10, 1);
 
         //5 - 10
@@ -52,36 +52,20 @@ public class WaveManager : MonoBehaviour {
         createWave(45, 25, 2);
         createWave(60, 40, 8);
         createWave(40, 30, 15);
-        createWave(80, 50, 20);*/
+        createWave(80, 50, 20);
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (canSpawnWave == true)
+        if (canSpawnWave == true && spawnNewWave == true)
         {
-            if (spawnNewWave == true)
-            {
-                canSpawnWave = false;
-                StartCoroutine(waveSpawn(waveCount));
-                scoreSystem.UpdateScore = true;
-            }
+           waveActive = true;
+           canSpawnWave = false;
+           StartCoroutine(waveSpawn(waveCount));
+           scoreSystem.UpdateScore = true;
         }
-
-        GameObject[] activeEnemies = GameObject.FindGameObjectsWithTag("Enemy");
-
-        if (activeEnemies.Length > 0)
-        {
-            waveActive = true;
-            canSpawnWave = false;
-        }
-        else
-        {
-            waveActive = false;
-            canSpawnWave = true;
-        }
-
     }
 
     IEnumerator waveSpawn(int waveNumber)
@@ -98,7 +82,8 @@ public class WaveManager : MonoBehaviour {
             yield return new WaitForSeconds(spawnDelay_);
         }
         waveCount++;
-
+        waveActive = false;
+        canSpawnWave = true;
     }
 
     public void createWave(int numOfBasic, int numOfSpeed, int numOfStrong)
@@ -129,6 +114,19 @@ public class WaveManager : MonoBehaviour {
             idx++;
         }
 
+        shuffle(waveArray);
+
         waves.Add(waveArray);
+    }
+
+    void shuffle(GameObject[] array)
+    {
+        for (int i = 0; i < array.Length; i++)
+        {
+            GameObject tmp = array[i];
+            int r = Random.Range(i, array.Length);
+            array[i] = array[r];
+            array[r] = tmp;
+        }
     }
 }

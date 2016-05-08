@@ -19,6 +19,7 @@ public class Tower : MonoBehaviour {
     public Vector3 TowerRotPoint;
 
     public planeDetector planeDetector;
+    private bool canShoot_;
 
     public string type
     {
@@ -43,115 +44,39 @@ public class Tower : MonoBehaviour {
         get { return fireCooldown_; }
         set { fireCooldown_ = value; }
     }
-    public float fireCooldownLeft
-    {
-        get { return fireCooldownLeft_; }
-        set { fireCooldownLeft_ = value; }
-    }
     public string CurFace
     {
         get { return curface_; }
         set { curface_ = value; }
     }
 
-    public void searchEnemies()
+    public bool canShoot
     {
-        waveManager = GameObject.Find("WaveManager").GetComponent<WaveManager>();
-
-        if (waveManager.waveActive == true)
-        {
-            pickNewEnemy();
-
-            if (nearestEnemy_ == null)
-            {
-                pickNewEnemy();
-            }
-            else
-            {
-                // this.transform.rotation = newRot;
-                fireCooldownLeft -= Time.deltaTime;
-
-                float d = Vector3.Distance(this.transform.position, nearestEnemy_.transform.position);
-
-                if (d <= range_)
-                {          
-                    if (nearestEnemy_.name == "BasicEnemy(Clone)")
-                    {
-                        if (fireCooldownLeft <= 0 && curface_ == nearestEnemy_.GetComponent<BasicEnemy>().currFace)
-                        {
-                            fireCooldownLeft = fireCooldown;
-                            Rotation(nearestEnemy_);
-                            ShootAt(nearestEnemy_);
-                        }
-                    }
-                    if (nearestEnemy_.name == "SpeedEnemy(Clone)")
-                    {
-                        if (fireCooldownLeft <= 0 && curface_ == nearestEnemy_.GetComponent<SpeedEnemy>().currFace)
-                        {
-                            fireCooldownLeft = fireCooldown;
-                            Rotation(nearestEnemy_);
-                            ShootAt(nearestEnemy_);
-                        }
-                    }
-                    if (nearestEnemy_.name == "StrongEnemy(Clone)")
-                    {
-                        if (fireCooldownLeft <= 0 && curface_ == nearestEnemy_.GetComponent<StrongEnemy>().currFace)
-                        {
-                            fireCooldownLeft = fireCooldown;
-                            Rotation(nearestEnemy_);
-                            ShootAt(nearestEnemy_);
-                        }
-                    }
-                }
-                else
-                {
-                    pickNewEnemy();
-                }
-            }
-        }
+        get { return canShoot_; }
+        set { canShoot_ = value; }
     }
 
-    void pickNewEnemy()
+    public GameObject nearestEnemy
     {
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-
-        //Choose closest
-        foreach (GameObject e in enemies)
-        {
-            switch (e.name)
-            {
-                case "BasicEnemy(Clone)":
-                    if (e.GetComponent<BasicEnemy>().currFace == curface_)
-                    {
-                        nearestEnemy_ = e;
-                    }
-                    break;
-
-                case "SpeedEnemy(Clone)":
-                    if (e.GetComponent<SpeedEnemy>().currFace == curface_)
-                    {
-                        nearestEnemy_ = e;
-                    }
-                    break;
-
-                case "StrongEnemy(Clone)":
-                    if (e.GetComponent<StrongEnemy>().currFace == curface_)
-                    {
-                        nearestEnemy_ = e;
-                    }
-                    break;
-            }
-
-        }
+        get { return nearestEnemy_; }
+        set { nearestEnemy_ = value; }
     }
-    void ShootAt(GameObject e)
+
+    public void ShootAt(GameObject e)
     {
+        canShoot_ = false;
         // TODO: Fire out the tip!
         GameObject bulletGO = (GameObject)Instantiate(bulletPrefab, pointOfFire.position, this.transform.rotation);
         Bullet b = bulletGO.GetComponent<Bullet>();
         b.target = e.transform;
         b.damage = damage_;
-        b.radius = range_;
+        StartCoroutine("shotDelay", fireCooldown);
+    }
+
+    IEnumerator shotDelay(float delayTime)
+    {
+        yield return new WaitForSeconds(delayTime);
+        canShoot_ = true;
     }
 
     public void Rotation(GameObject nearestEnemy)
@@ -162,8 +87,6 @@ public class Tower : MonoBehaviour {
 
        Vector3 dir = nearestEnemy.transform.position - this.transform.position;
        Quaternion lookRot = Quaternion.LookRotation(dir);
-
-     
 
        this.planeDetector = GameObject.Find("PlaneDetector").GetComponent<planeDetector>();
 
@@ -218,8 +141,8 @@ public class Tower : MonoBehaviour {
            TowerRotPoint.z = 0f;
        }
 
-       towerTransform.rotation = Quaternion.Euler(TowerRotPoint);
-       
+       towerTransform.rotation = Quaternion.Euler(TowerRotPoint);  
    }
+
 }
 

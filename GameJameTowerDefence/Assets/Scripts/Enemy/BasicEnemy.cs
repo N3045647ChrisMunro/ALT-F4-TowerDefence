@@ -112,6 +112,10 @@ public class BasicEnemy : EnemyBase{
         {
             applySlow();
         }
+        if (col.gameObject.tag == "AOE")
+        {
+            health -= 3;
+        }
         if (col.gameObject.tag == "Core")
         {
             gameManager.playerHealth--;

@@ -22,7 +22,6 @@ public class Grid : MonoBehaviour
     public GameObject waypointsParent;
     public List<GameObject> emptyGameObjs;
     public List<Transform> waypoints;
-    private int tracker;
     private int waypointTracker;
 
     // public CubeSide[] worldCube;
@@ -33,7 +32,6 @@ public class Grid : MonoBehaviour
 
     void Awake()
     {
-        tracker = 0;
         waypointTracker = 0;
         createCube();
     }
@@ -387,8 +385,6 @@ public class Grid : MonoBehaviour
     {
         //Size of the tile, so the half length can be substracted from the
         //position to centre it in a 4x2 tile
-        Vector3 tileSize = cubes[14].GetComponent<Collider>().bounds.size;
-
         Vector3 tempPos = new Vector3();
 
         switch (side)

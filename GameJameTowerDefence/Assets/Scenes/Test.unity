@@ -4821,7 +4821,7 @@ MonoBehaviour:
   - {fileID: 148050, guid: 05a4516018f05c749b6372c3c38d56fc, type: 2}
   - {fileID: 146966, guid: ca9e158f5569f8b4989486758cf5ba12, type: 2}
   - {fileID: 169776, guid: f55b7f43f19c05b4c88b809fcb3e8c03, type: 2}
-  waveCount: 0
+  waveCount: 10
   spawnNewWave: 0
   waveActive: 0
   canSpawnWave: 0
@@ -12882,7 +12882,7 @@ MonoBehaviour:
   healthValue: {fileID: 642043729}
   UpdateScore: 0
   UpdateGold: 0
-  gold: 50
+  gold: 100
   playerHealth: 500
   DeathPopUp: {fileID: 1253793598}
 --- !u!4 &1771264871
@@ -14549,6 +14549,7 @@ Canvas:
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0

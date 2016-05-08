@@ -22,7 +22,7 @@ public class MouseLook : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		
+		/*
 		if (allowEscape && Input.GetKeyDown (KeyCode.Escape))
 			Screen.lockCursor = !Screen.lockCursor;//check if we should unlock cursor
 		/*
@@ -32,12 +32,13 @@ public class MouseLook : MonoBehaviour
 			else if (!lockCursor)
 				Screen.lockCursor = false;
 		}
-		*/
+		
 		total += Vector2.Scale (new Vector2 (Input.GetAxis ("Mouse X"), Input.GetAxis ("Mouse Y")), sensitivityModifier); //total look vector + (delta move * sensitivity modifier);
 		
 		Quaternion horizontalRotation = Quaternion.AngleAxis (total.x, Vector3.up); //lateral turn;
 		Quaternion verticalRotation = Quaternion.AngleAxis (Mathf.Clamp (-total.y, -90, 90), Vector3.right); //vertical turn;
 		
 		transform.rotation = horizontalRotation * verticalRotation; //apply, using horizontal first;
+        */
 	}
 }

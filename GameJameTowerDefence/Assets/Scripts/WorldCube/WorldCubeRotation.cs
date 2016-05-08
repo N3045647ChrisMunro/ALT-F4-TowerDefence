@@ -6,8 +6,6 @@ public class WorldCubeRotation : MonoBehaviour {
     public float sensetivity = 0.7f;
     
     
-    private float currentAngleX = 0;
-    private float currentAngleZ = 0;
     private float rotationX = 0;
     private float rotationZ = 0;
 
@@ -42,7 +40,7 @@ public class WorldCubeRotation : MonoBehaviour {
         {
             setCubeRotation();
         }
-
+        /*
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             Debug.Log("DOWN ARROW");
@@ -64,7 +62,7 @@ public class WorldCubeRotation : MonoBehaviour {
 
             //Quaternion angle = Quaternion.Euler(currentAngleX, 0, currentAngleZ);
             //transform.RotateAround(transform.position, Vector3.forward, 90f);
-        }
+        }*/
 
 	}
 
@@ -81,9 +79,7 @@ public class WorldCubeRotation : MonoBehaviour {
         //Positive Rotation
         if (rotationZ > sensetivity)
         {
-            currentAngleX += 90;
             Vector3 rotPos = new Vector3(4.79f, -4.94f, 4.112f);
-            Vector3 pos = new Vector3(2.456694f, -2.456694f, 1.9f);
             transform.RotateAround(rotPos, Vector3.forward, 90);
             cursorScript.resetSelCursor();
          }
@@ -91,52 +87,11 @@ public class WorldCubeRotation : MonoBehaviour {
         //Negative Rotation
          if (rotationZ < -sensetivity)
          {
-            currentAngleX -= 90;
             Vector3 rotPos = new Vector3(4.79f, -4.94f, 4.112f);
-            Vector3 pos = new Vector3(2.456694f, -2.456694f, 1.9f);
             transform.RotateAround(rotPos, Vector3.back, 90);
             cursorScript.resetSelCursor();
           }
 
          currentTime += delayTime;
-    }
-
-    void changeCurrentFace()
-    {
-        //float curX = transform.localEulerAngles.x;
-        //Debug.Log(curX);
-        //bool updatedPlane = false;
-
-        ////LEFT plane
-        //if (curX > 80 && curX < 100)
-        //{
-        //    currentPlane = 2;
-        //    updatedPlane = true;
-        //    Debug.Log("LEFT");
-        //}
-
-        ////RIGHT plane
-        //if (curX > 260 && curX < 290)
-        //{
-        //    currentPlane = 1;
-        //    updatedPlane = true;
-        //    Debug.Log("RIGHT");
-        //}
-        ////TOP plane
-        //if (curX == 0)
-        //{
-        //    updatedPlane = true;
-        //    currentPlane = 0;
-        //    Debug.Log("TOP");
-        //}
-
-        ////BOT plane
-        //if (!updatedPlane)
-        //{
-        //    currentPlane = 5;
-        //    Debug.Log("BOT");
-        //}
-
-        //currentPlane=planeDet.faceDetection();
     }
 }

@@ -14,8 +14,6 @@ public class CubeLayout : MonoBehaviour {
 
 	void Start () 
     {  
-        //-2.09, 2.74, -1.79
-
         //RIGHT PLANE
         //Rotation
         Quaternion target = Quaternion.Euler(270, 180, 0);
@@ -32,15 +30,6 @@ public class CubeLayout : MonoBehaviour {
         newPos = new Vector3(0.0f, -14.533f, -0.28405f);
         leftPlane.transform.localPosition = newPos;
 
-        /*
-        //TOP PLANE
-        //Rotation
-      //  target = Quaternion.Euler(0, 0, 0);
-       // topPlane.transform.rotation = target;
-        //Position
-        newPos = new Vector3(0, 0, 0);
-        topPlane.transform.position = newPos;
-         */
         //BOT PLANE
         //Rotation
         target = Quaternion.Euler(0, 0, 180);
@@ -49,13 +38,11 @@ public class CubeLayout : MonoBehaviour {
         newPos = new Vector3(4.6669f, -4.9893f, -24.56252f);
         botPlane.transform.localPosition = newPos;
         
-
         //FAR PLANE
         //Rotation
         target = Quaternion.Euler(0, 0, 90);
         farPlane.transform.rotation = target;
         //Position
-        //newPos = new Vector3(-0.115f, -4.8387f, -19.654f);
         newPos = new Vector3(-0.1612f, -4.828f, -19.6539f);
         farPlane.transform.localPosition = newPos;
 
@@ -67,11 +54,5 @@ public class CubeLayout : MonoBehaviour {
         newPos = new Vector3(4.8281f, -0.16129f, -14.74f);
         nearPlane.transform.localPosition = newPos;
         
-	}
-	
-	// Update is called once per frame
-	void Update () 
-    {
-	    
 	}
 }

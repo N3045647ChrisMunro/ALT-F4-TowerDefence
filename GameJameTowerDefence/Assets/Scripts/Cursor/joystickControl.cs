@@ -363,7 +363,6 @@ public class joystickControl : MonoBehaviour {
     {
         if (scoreSystem.buyTurret())
         {
-            Debug.Log(selectingTurret);
             if (!selectingTurret && currentTile != null)
             {
                 GameObject newTurret = Instantiate(turret, currentTile.transform.position, turret.transform.rotation) as GameObject;
@@ -441,7 +440,6 @@ public class joystickControl : MonoBehaviour {
                 //UPGRADE TURRET
                 if (hit.collider.name == "upgrade")
                 {
-                    Debug.Log("attempt to upgrade");
                     selectingTurret = true;
                     cursorChange();
                 }
