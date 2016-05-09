@@ -112,6 +112,9 @@ public class Grid : MonoBehaviour
                                 newTile.transform.position = pos;
                                 newTile.transform.SetParent(parent.transform, false);
 
+                                newTile.GetComponent<TileData>().idx_X = x;
+                                newTile.GetComponent<TileData>().idx_Z = y;
+
                                 cubeSideTileArray[x, y] = newTile;
 
 
@@ -123,11 +126,17 @@ public class Grid : MonoBehaviour
                                 GameObject newTile = Instantiate(cubes[0], pos, cubes[0].transform.rotation) as GameObject;
                                 newTile.transform.SetParent(parent.transform, false);
 
+                                newTile.GetComponent<TileData>().idx_X = x;
+                                newTile.GetComponent<TileData>().idx_Z = y;
+
                                 //This adds a tile ontop of the plane tile
                                 pos.y = 0.049f;
 
                                 GameObject pathTile = Instantiate(cubes[13], pos, cubes[13].transform.rotation) as GameObject;
                                 pathTile.transform.SetParent(parent.transform, false);
+
+                                pathTile.GetComponent<TileData>().idx_X = x;
+                                pathTile.GetComponent<TileData>().idx_Z = y;
 
                                 cubeSideTileArray[x, y] = newTile;
                             }
@@ -353,32 +362,43 @@ public class Grid : MonoBehaviour
     public GameObject getTile(string side, int x_IDX, int z_IDX)
     {
 
-        GameObject temp = new GameObject();
+        //GameObject temp = new GameObject();
+        //temp.name = "lalalalalalal";
 
         switch (side)
         {
-            case "Top":
-                temp = cubeSideTileArray_TOP[x_IDX, z_IDX];
+            case "TopPlane":
+                GameObject  temp = cubeSideTileArray_TOP[x_IDX, z_IDX];
+                return temp;
                 break;
-            case "Right":
-                temp = cubeSideTileArray_RIGHT[x_IDX, z_IDX];
+
+            case "RightPlane":
+                GameObject  temp1 = cubeSideTileArray_RIGHT[x_IDX, z_IDX];
+                return temp1;
                 break;
-            case "Left":
-                temp = cubeSideTileArray_LEFT[x_IDX, z_IDX];
+
+            case "LeftPlane":
+                GameObject temp2 = cubeSideTileArray_LEFT[x_IDX, z_IDX];
+                return temp2;
                 break;
-            case "Far":
-                temp = cubeSideTileArray_FAR[x_IDX, z_IDX];
+
+            case "FarPlane":
+                GameObject temp3 = cubeSideTileArray_FAR[x_IDX, z_IDX];
+                return temp3;
                 break;
-            case "Near":
-                temp = cubeSideTileArray_NEAR[x_IDX, z_IDX];
+
+            case "NearPlane":
+                GameObject temp4 = cubeSideTileArray_NEAR[x_IDX, z_IDX];
+                return temp4;
                 break;
-            case "Bot":
-                temp = cubeSideTileArray_BOT[x_IDX, z_IDX];
+
+            case "BotPlane":
+                GameObject temp5 = cubeSideTileArray_BOT[x_IDX, z_IDX];
+                return temp5;
                 break;
         }
 
-
-        return temp;
+        return null;
     }
 
     public Vector3 getTilePosition(string side, int x_IDX, int z_IDX)

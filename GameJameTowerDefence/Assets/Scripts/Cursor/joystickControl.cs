@@ -17,6 +17,11 @@ public class joystickControl : MonoBehaviour {
     private float topMaximumSel = 6.1f;
     private float botMaximumSel = 1.8f;
 
+    //Coordinates
+    private int curX = 0;
+    private int curZ = 0;
+
+
     //Menu Cursor
     private float topMaximumMenu = 2.43f;
     private float botMaximumMenu = -1f;
@@ -32,7 +37,7 @@ public class joystickControl : MonoBehaviour {
     public GameObject cursorProjection;
     public GameObject illegalProjection;
 
-    public GameObject currentTile;
+    //public GameObject currentTile;
     public GameObject selParticles;
     public GameObject currentTurret;
 
@@ -71,10 +76,23 @@ public class joystickControl : MonoBehaviour {
     //Audio
     public GameObject audioMangr;
 
+    //Plane
+    public planeDetector planeDet;
+    public Grid gridScript;
+
+    //Stuff
+    private GameObject curTile;
+    private GameObject prevTile;
+    private Color originalMat;
+
+    //Indexing
+    public int currentXIndex;
+    public int currentZIndex;
+
     void Start()
     {
-        mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-        initialCameraPos = mainCamera.transform.position;
+       // mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+       // initialCameraPos = mainCamera.transform.position;
 
         initialMenCursPos = menuCurs.transform.position;
         initialSelCursPos = selectionCurs.transform.position;
@@ -92,11 +110,11 @@ public class joystickControl : MonoBehaviour {
 
     }
 
-	// Update is called once per frame
-	void Update ()
+    // Update is called once per frame
+    void Update()
     {
         waveManager.spawnNewWave = false;
-        if (curTime <= 0.2f && currentCurs!=null)
+        if (curTime <= 0.2f && currentCurs != null)
         {
             moveCursor();
             curTime = timeInterval;
@@ -107,8 +125,7 @@ public class joystickControl : MonoBehaviour {
         }
         //moveMenuCurs();
         select();
-	}
-
+    }
 
     //This functions moves the cursor accroding to joystick input
     void moveCursor()
@@ -124,40 +141,49 @@ public class joystickControl : MonoBehaviour {
         Vector3 newPos = new Vector3();
         newPos = currentCurs.transform.position;
 
+
         //Calculate new camera position
         //This is used to slightly move the camera when cursor moves
         Vector3 newCamPos = new Vector3();
-        newCamPos = mainCamera.transform.position;
+      //  newCamPos = mainCamera.transform.position;
 
         //Z and X axisaxis
         if (currentCurs == selectionCurs)
         {
-            if (cursorVert > sensetivity && !topEdge())           //positive direction
+            if (cursorVert > sensetivity && curZ < 9)           //positive direction
             {
                 newPos.z += step;
                 newCamPos.z += cameraStep;
+
+                curZ++;
             }
 
-            if (cursorVert < -sensetivity && !botEdge())          //negative direction
+            if (cursorVert < -sensetivity && curZ > 0)          //negative direction
             {
                 newPos.z -= step;
                 newCamPos.z -= cameraStep;
+
+                curZ--;
             }
 
             //X axis
-            if (cursorHor > sensetivity && !rightEdge())              //positive direction
+            if (cursorHor > sensetivity && curX < 9)              //positive direction
             {
                 newPos.x += step;
                 newCamPos.x += cameraStep;
+
+                curX++;
             }
 
-            if (cursorHor < -sensetivity && !leftEdge())           //negative durection
+            if (cursorHor < -sensetivity && curX > 0)           //negative durection
             {
                 newPos.x -= step;
                 newCamPos.x -= cameraStep;
+
+                curX--;
             }
 
-            projectionUpdate();
+            otherProjection();
         }
 
         //Y AXIS
@@ -174,82 +200,39 @@ public class joystickControl : MonoBehaviour {
                 newPos.y -= step;
                 newCamPos.y -= cameraStep;
             }
+
+            //Apply new position
+            currentCurs.transform.position = newPos;
         }
 
-        //Apply new position
-        currentCurs.transform.position = newPos;
-        mainCamera.transform.position = newCamPos;
+       // mainCamera.transform.position = newCamPos;
     }
+
+    void otherProjection()
+    {
+        string curPlane = planeDet.currentPlane;
+        if (curTile != null && originalMat != null)
+        {
+            prevTile = curTile;
+            Renderer[] prevRend = prevTile.GetComponentsInChildren<Renderer>();
+            foreach (Renderer prevR in prevRend)
+            {
+                prevR.material.color = originalMat;
+            }
+        }
+
+        curTile = gridScript.getTile(curPlane, curX, curZ);       //get new tile                                                                     
+        Renderer[] renderers = curTile.GetComponentsInChildren<Renderer>();
+        originalMat = renderers[0].material.color;
+        foreach (Renderer rend in renderers)
+        {
+            rend.material.color = Color.green;
+        }
+        Debug.Log(curTile.name);
+    }
+
 
    
-    //Manages the projection
-    void projectionUpdate()
-    {
-        RaycastHit hit;
-        Vector3 rayOrigin = new Vector3();
-        rayOrigin = currentCurs.transform.position;
-        //rayOrigin.y -= rayOffset;
-        Ray cursorRay = new Ray(rayOrigin, Vector3.down);  //Create a ray with cursor as an origin and down as a direction
-
-
-        if (Physics.Raycast(cursorRay, out hit))                     //If something was hit
-        {
-            //OVER TILE
-            if (hit.collider.tag == "Tile")                         //Check if it is a tile
-            {
-                deleteProjection();
-                selParticles.SetActive(false);
-
-                GameObject tile = hit.collider.gameObject;
-                Vector3 newPos = tile.transform.position;
-                newPos.y += 0.07f;
-                GameObject newProj = Instantiate(cursorProjection, newPos, cursorProjection.transform.rotation) as GameObject;
-
-                Renderer rend = newProj.GetComponent<Renderer>();
-                rend.sharedMaterial.color = Color.green;
-
-                currentTile = tile;
-            }
-
-            //OVER ILLEGAL
-            if (hit.collider.tag == "UsedTile")
-            {
-                deleteProjection();
-                selParticles.SetActive(false);
-
-                GameObject tile = hit.collider.gameObject;
-                Vector3 newPos = tile.transform.position;
-                newPos.y += 0.07f;
-                GameObject newProj = Instantiate(cursorProjection, newPos, cursorProjection.transform.rotation) as GameObject;
-
-                Renderer rend = newProj.GetComponent<Renderer>();
-                rend.sharedMaterial.color = Color.red;
-
-                currentTile = null;
-            }
-
-            //OVER TURRET
-            if(hit.collider.tag=="Turret" && selectingTurret)
-            {
-                deleteProjection();
-                GameObject Turret = hit.collider.gameObject;
-                selParticles.SetActive(true);
-                currentTurret = hit.collider.gameObject;
-            }
-
-        }
-    }
-
-    void deleteProjection()
-    {
-        GameObject previousProj = GameObject.FindGameObjectWithTag("CursorProjection");
-
-        if (previousProj != null)
-        {
-            Destroy(previousProj);
-        }
-    }
-
     //-------------------------------------------CHECK EDGES-----------------------------------------------
     //These functions return true, if a cursor is outside allowed area 
     bool rightEdge()
@@ -261,8 +244,10 @@ public class joystickControl : MonoBehaviour {
 
     public void resetSelCursor()
     {
-        selectionCurs.transform.position = initialSelCursPos;
-        mainCamera.transform.position = initialCameraPos;
+        //selectionCurs.transform.position = initialSelCursPos;
+        curX = 0;
+        curZ = 0;
+       // mainCamera.transform.position = initialCameraPos;
     }
 
     bool leftEdge()
@@ -297,7 +282,7 @@ public class joystickControl : MonoBehaviour {
     void select()
     {
         float triggerPressed = Input.GetAxis("TriggerAnalogue");        //Get value from analogue
-        if(triggerPressed !=0)                                          //If LT is pressed
+        if (triggerPressed != 0)                                          //If LT is pressed
         {
             triggerOn = true;
         }
@@ -307,7 +292,7 @@ public class joystickControl : MonoBehaviour {
                 triggerOff = true;
         }
 
-        if(triggerOn && triggerOff)
+        if (triggerOn && triggerOff)
         {
             audioMangr = GameObject.FindGameObjectWithTag("Audio");
             //Sound
@@ -328,7 +313,7 @@ public class joystickControl : MonoBehaviour {
                 if (currentCurs == menuCurs)
                     onMenuCursorClick();
             }
-            
+
         }
 
     }
@@ -336,7 +321,7 @@ public class joystickControl : MonoBehaviour {
     //CURSOR CHANGE
     void cursorChange()
     {
-        deleteProjection();
+        // deleteProjection();
         if (currentCurs == selectionCurs)
         {
             menuCurs.SetActive(true);
@@ -354,40 +339,39 @@ public class joystickControl : MonoBehaviour {
 
         triggerOff = false;
         triggerOn = false;
-        mainCamera.transform.position = initialCameraPos;
-        deleteProjection();
+        //mainCamera.transform.position = initialCameraPos;
+        //   deleteProjection();
     }
 
     //SELECTION CURSOR ACTIVE
     void onSelectCursorClick()
     {
-        if (scoreSystem.buyTurret())
+        if (curTile != null && curTile.tag != "UsedTile")
         {
-            if (!selectingTurret && currentTile != null)
+            Debug.Log(selectingTurret);
+            if (scoreSystem.buyTurret() && !selectingTurret)
             {
-                GameObject newTurret = Instantiate(turret, currentTile.transform.position, turret.transform.rotation) as GameObject;
+                GameObject newTurret = Instantiate(turret, curTile.transform.position, turret.transform.rotation) as GameObject;
 
-                currentTile.tag = "UsedTile";
+                curTile.tag = "UsedTile";
 
                 turretOffset offset = newTurret.GetComponent<turretOffset>();
-                Vector3 turretPos = currentTile.transform.position;
-                turretPos.x += offset.xOffset;
-                turretPos.z -= offset.zOffset;
+                Vector3 turretPos = curTile.transform.position;
+                //turretPos.x += offset.xOffset;
+                // turretPos.z -= offset.zOffset;
                 float sizeY = newTurret.GetComponent<BoxCollider>().bounds.size.y;
                 turretPos.y += sizeY;
 
                 newTurret.transform.parent = parentCube.transform;
                 newTurret.transform.position = turretPos;
 
-                deleteProjection();
                 cursorChange();
 
-                currentTile = null;
+                curTile = null;
             }
 
-            if(selectingTurret)
+            if (selectingTurret)
             {
-                deleteProjection();
                 if (currentTurret != null)
                 {
                     Transform prevTransform = currentTurret.transform;
@@ -409,10 +393,10 @@ public class joystickControl : MonoBehaviour {
         }
     }
 
-    //MENU CURSOR ACTIVE
+    //-------------------------------MENU CURSOR ACTIVE---------------------------------
     void onMenuCursorClick()
     {
-        deleteProjection();
+        // deleteProjection();
         RaycastHit hit;
         Vector3 rayOrigin = new Vector3();
         rayOrigin = currentCurs.transform.position;
@@ -434,12 +418,13 @@ public class joystickControl : MonoBehaviour {
                         menuCurs.transform.position = initialMenCursPos;
                     }
                     selectingTurret = false;
-                         
+
                 }
 
                 //UPGRADE TURRET
                 if (hit.collider.name == "upgrade")
                 {
+                    Debug.Log("attempt to upgrade");
                     selectingTurret = true;
                     cursorChange();
                 }

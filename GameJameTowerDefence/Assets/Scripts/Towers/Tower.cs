@@ -21,6 +21,9 @@ public class Tower : MonoBehaviour {
     public planeDetector planeDetector;
     private bool canShoot_;
 
+    //Auudio
+    public inGameAudio shootSnd;
+
     public string type
     {
         get { return type_; }
@@ -70,6 +73,8 @@ public class Tower : MonoBehaviour {
         Bullet b = bulletGO.GetComponent<Bullet>();
         b.target = e.transform;
         b.damage = damage_;
+        //Audio
+        shootSnd.shootSource.Play();
         StartCoroutine("shotDelay", fireCooldown);
     }
 

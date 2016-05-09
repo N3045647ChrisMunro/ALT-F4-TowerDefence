@@ -12,6 +12,7 @@ GameObject:
   - 23: {fileID: 2369834}
   - 95: {fileID: 9599552}
   - 65: {fileID: 6553020}
+  - 114: {fileID: 11454910}
   m_Layer: 0
   m_Name: Tile1
   m_TagString: Tile
@@ -28,6 +29,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 450454}
   - 65: {fileID: 6533266}
+  - 114: {fileID: 11407400}
   m_Layer: 0
   m_Name: GroundTile1
   m_TagString: Untagged
@@ -47,6 +49,7 @@ GameObject:
   - 23: {fileID: 2317100}
   - 95: {fileID: 9549200}
   - 65: {fileID: 6568026}
+  - 114: {fileID: 11480046}
   m_Layer: 0
   m_Name: Tile
   m_TagString: Tile
@@ -228,6 +231,48 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &11407400
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 173864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c6d554153289b4408eca9a8256bc21a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  idx_X: 0
+  idx_Z: 0
+  occupiedBy: 
+--- !u!114 &11454910
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 125886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c6d554153289b4408eca9a8256bc21a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  idx_X: 0
+  idx_Z: 0
+  occupiedBy: 
+--- !u!114 &11480046
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 178790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c6d554153289b4408eca9a8256bc21a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  idx_X: 0
+  idx_Z: 0
+  occupiedBy: 
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

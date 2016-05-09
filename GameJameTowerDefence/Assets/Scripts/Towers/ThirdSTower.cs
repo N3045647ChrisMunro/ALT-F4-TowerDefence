@@ -14,6 +14,9 @@ public class ThirdSTower : Tower
 
         this.CurFace = GameObject.Find("PlaneDetector").GetComponent<planeDetector>().currentPlane;
 
+        //Audio
+        this.shootSnd = GameObject.FindGameObjectWithTag("Audio").GetComponent<inGameAudio>();
+
         pointOfFire = transform.FindChild("PointOfFire");
     }
     void OnTriggerStay(Collider col)

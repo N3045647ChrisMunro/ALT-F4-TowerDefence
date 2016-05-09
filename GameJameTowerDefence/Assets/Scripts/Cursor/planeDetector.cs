@@ -4,6 +4,8 @@ using System.Collections;
 public class planeDetector : MonoBehaviour
 {
 
+    //Kristina testing stuff
+    public GameObject world;
 
     public string currentPlane;
 
@@ -23,9 +25,11 @@ public class planeDetector : MonoBehaviour
     {
         RaycastHit hit;
         Vector3 rayOrigin = new Vector3();
+        Vector3 direction = world.transform.position - transform.position;
         rayOrigin = this.transform.position;
 
-        Ray cursorRay = new Ray(rayOrigin, Vector3.down);  //Create a ray with cursor as an origin and down as a direction
+        Ray cursorRay = new Ray(rayOrigin, direction);  //Create a ray with cursor as an origin and down as a direction
+        
 
         if (Physics.Raycast(cursorRay, out hit))                     //If something was hit
         {

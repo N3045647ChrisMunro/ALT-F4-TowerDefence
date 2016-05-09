@@ -88,12 +88,6 @@ public class menuNavigation : MonoBehaviour {
 
     void overMenuButton(int previousButton)
     {
-       // Renderer rend = buttons[currentButton].GetComponent<Renderer>();
-       // rend.material.color = Color.green;
-
-       // Renderer perviousRend = buttons[previousButton].GetComponent<Renderer>();
-       // perviousRend.material.color = Color.grey;
-
         buttons[currentButton].SetActive(false);
         buttons[previousButton].SetActive(true);
 
@@ -112,6 +106,16 @@ public class menuNavigation : MonoBehaviour {
             if (buttons[currentButton].name == "SettingsButton")
             {
                 SceneManager.LoadScene(2);
+            }
+
+            if (buttons[currentButton].name == "CreditsButton")
+            {
+                SceneManager.LoadScene(3);
+            }
+
+            if (buttons[currentButton].name == "ExitButton")
+            {
+                Application.Quit();
             }
 
             //Sound

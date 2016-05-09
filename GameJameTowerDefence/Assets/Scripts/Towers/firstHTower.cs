@@ -13,6 +13,8 @@ public class firstHTower : Tower
         this.canShoot = true;
 
         this.CurFace = GameObject.Find("PlaneDetector").GetComponent<planeDetector>().currentPlane;
+        //Audio
+        this.shootSnd = GameObject.FindGameObjectWithTag("Audio").GetComponent<inGameAudio>();
 
         pointOfFire = transform.FindChild("PointOfFire");
     }

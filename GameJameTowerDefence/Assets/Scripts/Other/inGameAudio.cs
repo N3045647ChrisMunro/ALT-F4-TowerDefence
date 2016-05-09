@@ -19,6 +19,10 @@ public class inGameAudio : MonoBehaviour {
     public AudioSource deathSource;
     public AudioClip deathSound;
 
+    //Shoot
+    public AudioSource shootSource;
+    public AudioClip shootSound;
+
 	// Use this for initialization
 	void Start () 
     {
@@ -26,6 +30,7 @@ public class inGameAudio : MonoBehaviour {
         selectSource = AddAudio(selectSound);
         waveSource = AddAudio(waveSound);
         deathSource = AddAudio(deathSound);
+        shootSource = AddAudio(shootSound);
 	}
 	
 	// Update is called once per frame
