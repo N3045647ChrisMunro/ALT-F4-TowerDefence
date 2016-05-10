@@ -6,5 +6,5 @@ public class TileData : MonoBehaviour {
     public int idx_X;
     public int idx_Z;
 
-    public string occupiedBy;
+    public GameObject occupiedBy;
 }

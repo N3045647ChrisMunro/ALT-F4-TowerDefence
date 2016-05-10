@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class cameraRot : MonoBehaviour
-{
+public class cameraRot : MonoBehaviour {
 
     // Use this for initialization
     private int currAngle;
@@ -13,9 +12,18 @@ public class cameraRot : MonoBehaviour
     public bool rotateCubeZ = false;
     public bool rotateCubeX = false;
     private Vector3 direction;
+
+    private float rotationX;
+    private float rotationZ;
+
+    float sensetivity = 0.7f;
+    //Timer
+    public float curTime = 0;
+    public float timeInterval = 0.1f;
+
+    Quaternion targetRotation;
     void Start()
     {
-
         currAngle = 0;
         maxAngleZ = 0;
         maxAngleX = 0;
@@ -25,89 +33,73 @@ public class cameraRot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if (Input.GetKeyDown(KeyCode.UpArrow) && rotateCubeZ == false)
-        {
-            direction = Vector3.forward;
-            maxAngleZ = (int)this.transform.rotation.eulerAngles.z + 90;
-            posDirectionZ = true;
-            rotateCubeZ = true;
-        }
-        if (Input.GetKeyDown(KeyCode.DownArrow) && rotateCubeZ == false)
-        {
-            direction = Vector3.back;
-            maxAngleZ = (int)this.transform.rotation.eulerAngles.z + 270;
-            posDirectionZ = false;
-            rotateCubeZ = true;
-        }
-        if (Input.GetKeyDown(KeyCode.LeftArrow) && rotateCubeX == false)
-        {
-            direction = Vector3.right;
-            maxAngleX = (int)this.transform.rotation.eulerAngles.x + 90;
-            posDirectionX = true;
-            rotateCubeX = true;
-        }
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            direction = Vector3.right;
-            rotateCubeX = true;
-        }
-
-        Debug.Log("mxA " + maxAngleX);
+        setRotation();
 
         if (rotateCubeZ)
-            doRotationZ(direction, posDirectionZ);
+            doRotationZ(targetRotation);
 
         if (rotateCubeX)
-            doRotationX(direction, posDirectionX);
-
+            doRotationX(targetRotation);
     }
-    void doRotationZ(Vector3 dir, bool positiveDir)
+
+    void setRotation()
     {
-        if (positiveDir == true)
+        rotationX = Input.GetAxis("RotationVertical");
+        rotationZ = Input.GetAxis("RotationHorizontal");
+
+        //--------------------ROTATION---------------------\\
+
+        if ((Input.GetKeyDown(KeyCode.UpArrow) && rotateCubeZ == false && rotateCubeX == false) || (rotationZ < -sensetivity && rotateCubeZ == false && rotateCubeX == false))
         {
-            if (maxAngleZ > 271)
-            {
-                transform.Rotate(dir, currAngle + 1);
-                if (this.transform.rotation.eulerAngles.z <= 1)
-                {
-                    rotateCubeZ = false;
-                }
-            }
-            else
-            {
-                transform.Rotate(dir, currAngle + 1);
-                if (this.transform.rotation.eulerAngles.z >= maxAngleZ)
-                {
-                    rotateCubeZ = false;
-                }
-            }
+            maxAngleZ += 90;
+            targetRotation = Quaternion.Euler(maxAngleX, 0, maxAngleZ);
+            rotateCubeZ = true;
         }
-        else
+
+        if ((Input.GetKeyDown(KeyCode.DownArrow) && rotateCubeZ == false) || (rotationZ > sensetivity && rotateCubeZ == false && rotateCubeX == false))
         {
-            Debug.Log(dir);
-            transform.Rotate(dir, currAngle + 1);
-            if (this.transform.rotation.eulerAngles.z == 270)
-            {
-                rotateCubeZ = false;
-            }
+            maxAngleZ -= 90;
+            targetRotation = Quaternion.Euler(maxAngleX, 0, maxAngleZ);
+            rotateCubeZ = true;
+        }
+
+        if ((Input.GetKeyDown(KeyCode.LeftArrow) && rotateCubeX == false) || (rotationX < -sensetivity && rotateCubeZ == false && rotateCubeX == false))
+        {
+            maxAngleX -= 90;
+            targetRotation = Quaternion.Euler(maxAngleX, 0, maxAngleZ);
+            rotateCubeX = true;
+        }
+
+        if ((Input.GetKeyDown(KeyCode.RightArrow) && rotateCubeX == false) || (rotationX > sensetivity && rotateCubeZ == false && rotateCubeX == false))
+        {
+            maxAngleX += 90;
+            targetRotation = Quaternion.Euler(maxAngleX, 0, maxAngleZ);
+            rotateCubeX = true;
         }
 
     }
 
-    void doRotationX(Vector3 dir, bool positiveDir)
+    //-------------------ROTATION Z----------------------
+    void doRotationZ(Quaternion target)
     {
-        if (positiveDir == true)
+
+        transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * 10);
+        if (this.transform.rotation == targetRotation)
         {
-            Debug.Log("Hi");
-            transform.Rotate(dir, currAngle + 1);
-            if (this.transform.rotation.eulerAngles.x >= maxAngleX)
-            {
-                rotateCubeX = false;
-            }
+            rotateCubeZ = false;
         }
 
-
     }
+    //-------------------ROTATION Z----------------------
 
+    //___________________ROTATION X____________________
+
+    void doRotationX(Quaternion target)
+    {
+        transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * 10);
+        if (this.transform.rotation == targetRotation)
+        {
+            rotateCubeX = false;
+        }
+    }
 }

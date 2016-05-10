@@ -24,7 +24,8 @@ public class ScoreSystem : MonoBehaviour {
     private int goldPerEnemy = 1;
 
     //Turret
-    private int turretPrice = 5;
+    public int turretPrice = 5;
+    public int upgradePrice = 10;
 
     //Player health
     public int playerHealth = 200;
@@ -114,19 +115,40 @@ public class ScoreSystem : MonoBehaviour {
     //BUY A TURRET
     //Is called when a player tries to buy a turret
     //Checks gold ad price
-    public bool buyTurret()
+    public void buyTurret()
     {
         if (gold >= turretPrice)
         {
             gold -= turretPrice;
             goldValue.text = gold.ToString();
             notifText.text = "Turret bought";
-            return true;
         }
         else
         {
             notifText.text = "Not enough gold";
-            return false;
         }
+    }
+
+    public void upgradeTurret()
+    {
+        if (gold >= upgradePrice)
+        {
+            gold -= upgradePrice;
+            goldValue.text = gold.ToString();
+            notifText.text = "Turret upgraded";
+        }
+        else
+        {
+            notifText.text = "Not enough gold";
+        }
+    }
+
+    public bool canBuyTurret()
+    {
+        if (gold >= turretPrice)
+        {
+            return true;
+        }
+        return false;
     }
 }

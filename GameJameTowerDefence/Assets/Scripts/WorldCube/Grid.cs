@@ -137,6 +137,7 @@ public class Grid : MonoBehaviour
 
                                 pathTile.GetComponent<TileData>().idx_X = x;
                                 pathTile.GetComponent<TileData>().idx_Z = y;
+                                newTile.GetComponent<TileData>().occupiedBy = pathTile;
 
                                 cubeSideTileArray[x, y] = newTile;
                             }
@@ -266,6 +267,44 @@ public class Grid : MonoBehaviour
                             waypointTracker++;
 
                         }
+                        //Reading Left plane Waypoint Information
+                        line = reader.ReadLine();
+
+                        if (line == "Left")
+                        {
+
+
+                        }
+                        else
+                        {
+                            Debug.Log("Something Went Wrong");
+                            return;
+                        }
+
+                        line = reader.ReadLine();
+
+                        idxs = line.Split(':');
+
+                        for (int i = 0; i < idxs.Length; i++)
+                        {
+                            string[] tileIDX = idxs[i].Split(',');
+
+                            emptyGameObjs.Add(new GameObject());
+
+                            int x = int.Parse(tileIDX[0]);
+                            int z = int.Parse(tileIDX[1]);
+
+                            emptyGameObjs[waypointTracker].transform.localPosition = getTilePosition("Left", x, z);
+
+                            Quaternion worldRot = this.transform.localRotation;
+
+                            emptyGameObjs[waypointTracker].transform.rotation = worldRot;
+
+                            emptyGameObjs[waypointTracker].transform.SetParent(GameObject.FindGameObjectWithTag("Left").transform, false);
+                            waypoints.Add(emptyGameObjs[waypointTracker].transform);
+
+                            waypointTracker++;
+                        }
 
                         //Reading Bot plane Waypoint Information
                         line = reader.ReadLine();
@@ -307,7 +346,46 @@ public class Grid : MonoBehaviour
 
                         }
 
-                        //Reading Bot plane Waypoint Information
+                        //Reading Right plane Waypoint Information
+                        line = reader.ReadLine();
+
+                        if (line == "Right")
+                        {
+
+                        }
+                        else
+                        {
+                            Debug.Log("Something Went Wrong");
+                            return;
+                        }
+
+                        line = reader.ReadLine();
+
+                        idxs = line.Split(':');
+
+                        for (int i = 0; i < idxs.Length; i++)
+                        {
+                            string[] tileIDX = idxs[i].Split(',');
+
+                            emptyGameObjs.Add(new GameObject());
+
+                            int x = int.Parse(tileIDX[0]);
+                            int z = int.Parse(tileIDX[1]);
+
+                            emptyGameObjs[waypointTracker].transform.localPosition = getTilePosition("Right", x, z);
+
+                            Quaternion worldRot = this.transform.localRotation;
+
+                            emptyGameObjs[waypointTracker].transform.rotation = worldRot;
+
+                            emptyGameObjs[waypointTracker].transform.SetParent(GameObject.FindGameObjectWithTag("Right").transform, false);
+                            waypoints.Add(emptyGameObjs[waypointTracker].transform);
+
+                            waypointTracker++;
+
+                        }
+
+                        //Reading Near plane Waypoint Information
                         line = reader.ReadLine();
 
                         if (line == "Near")

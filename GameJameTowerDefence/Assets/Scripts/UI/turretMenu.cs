@@ -22,14 +22,14 @@ public class turretMenu : MonoBehaviour {
     //Turret menu
     public GameObject subMenu;
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    void Start()
     {
-	
-	}
-	
-	// Update is called once per frame
-	void Update ()
+
+    }
+
+    // Update is called once per frame
+    void Update()
     {
         onMenuOpen();
     }
@@ -49,23 +49,35 @@ public class turretMenu : MonoBehaviour {
         //4 BUTTONS
         if (cursorHor > sensetivity)
         {
+            buttons[previousButton].SetActive(true);
+
             previousButton = currentButton;
             currentButton = 1;
             visualButton("Heavy");
+
+            buttons[currentButton].SetActive(false);
         }
 
         if (cursorHor < -sensetivity)
         {
+            buttons[previousButton].SetActive(true);
+
             previousButton = currentButton;
             currentButton = 2;
             visualButton("Snare");
+
+            buttons[currentButton].SetActive(false);
         }
 
         if (cursorVert < -sensetivity)
         {
+            buttons[previousButton].SetActive(true);
+
             previousButton = currentButton;
             currentButton = 0;
             visualButton("Basic");
+
+            buttons[currentButton].SetActive(false);
         }
     }
 
@@ -73,12 +85,6 @@ public class turretMenu : MonoBehaviour {
     {
         if (subMenu.activeSelf)
         {
-
-            Renderer rendPrev = buttons[previousButton].GetComponent<Renderer>();
-            rendPrev.material.color = Color.white;
-
-            Renderer rend = buttons[currentButton].GetComponent<Renderer>();
-            rend.material.color = Color.green;
 
             if (type == "Basic")
             {

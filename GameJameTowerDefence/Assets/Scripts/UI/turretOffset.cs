@@ -3,8 +3,8 @@ using System.Collections;
 
 public class turretOffset : MonoBehaviour {
 
-    public float zOffset = 0;
     public float xOffset = 0;
+    public float zOffset = 0;
     public string type;
     public int upgradeNumber;
 

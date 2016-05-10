@@ -96,48 +96,49 @@ public class Tower : MonoBehaviour {
        this.planeDetector = GameObject.Find("PlaneDetector").GetComponent<planeDetector>();
 
        string worldCurrentFace = planeDetector.currentPlane;
-
+/*
        if (CurFace == "TopPlane" && worldCurrentFace == "FarPlane")
        {
-           TowerRotPoint.x = lookRot.eulerAngles.y + 90;
-           TowerRotPoint.y = 0f;
-           TowerRotPoint.z = -90f;
+           //lookRot.eulerAngles.y + 90;
+           TowerRotPoint.x = 0f;
+           TowerRotPoint.y = lookRot.eulerAngles.y + 90f;
+           TowerRotPoint.z = 0f;
        }
        if (CurFace == "TopPlane" && worldCurrentFace == "NearPlane")
        {
-           TowerRotPoint.x = lookRot.eulerAngles.y + -90;
-           TowerRotPoint.y = 0f;
-           TowerRotPoint.z = 90f;
+           TowerRotPoint.x = 0f;
+           TowerRotPoint.y = lookRot.eulerAngles.y + 90f;
+           TowerRotPoint.z = 0f;
        }
        if (CurFace == "FarPlane" && worldCurrentFace == "TopPlane")
        {
-           TowerRotPoint.x = lookRot.eulerAngles.y + -90;
-           TowerRotPoint.y = 0f;
-           TowerRotPoint.z = 90f;
+           TowerRotPoint.x = 0f;
+           TowerRotPoint.y = lookRot.eulerAngles.y + 90f;
+           TowerRotPoint.z = 0f;
        }
        if (CurFace == "FarPlane" && worldCurrentFace == "BotPlane")
        {
-           TowerRotPoint.x = lookRot.eulerAngles.y + 90;
-           TowerRotPoint.y = 0f;
-           TowerRotPoint.z = -90f;
+           TowerRotPoint.x = 0f;
+           TowerRotPoint.y = lookRot.eulerAngles.y + 90f;
+           TowerRotPoint.z = 0f;
        }
        if (CurFace == "TopPlane" && worldCurrentFace == "BotPlane")
        {
-           TowerRotPoint.x = lookRot.eulerAngles.y + 90;
-           TowerRotPoint.y = 0f;
-           TowerRotPoint.z = -90f;
+           TowerRotPoint.x = 0f;
+           TowerRotPoint.y = lookRot.eulerAngles.y + 90f;
+           TowerRotPoint.z = 0f;
        }
        if (CurFace == "NearPlane" && worldCurrentFace == "BotPlane")
        {
-           TowerRotPoint.x = lookRot.eulerAngles.y + 180;
-           TowerRotPoint.y = 0f;
-           TowerRotPoint.z = 90f;
+           TowerRotPoint.x = 0f;
+           TowerRotPoint.y = lookRot.eulerAngles.y + 90f;
+           TowerRotPoint.z = 0f;
        }
        if (CurFace == "BotPlane" && worldCurrentFace == "FarPlane")
        {
-           TowerRotPoint.x = -lookRot.eulerAngles.y + -90;
-           TowerRotPoint.y = 0f;
-           TowerRotPoint.z = 90f;
+           TowerRotPoint.x = 0f;
+           TowerRotPoint.y = lookRot.eulerAngles.y + 90f;
+           TowerRotPoint.z = 0f;
        }
        else if (CurFace == worldCurrentFace)
        {
@@ -145,8 +146,20 @@ public class Tower : MonoBehaviour {
            TowerRotPoint.y = lookRot.eulerAngles.y + 90;
            TowerRotPoint.z = 0f;
        }
-
-       towerTransform.rotation = Quaternion.Euler(TowerRotPoint);  
+     */
+       if (CurFace == "BotPlane")
+       {
+           TowerRotPoint.x = 0f;
+           TowerRotPoint.y = -lookRot.eulerAngles.y + 90;
+           TowerRotPoint.z = 0f;
+       }
+       else
+       {
+           TowerRotPoint.x = 0f;
+           TowerRotPoint.y = lookRot.eulerAngles.y + 90;
+           TowerRotPoint.z = 0f;
+       }
+       towerTransform.localRotation = Quaternion.Euler(TowerRotPoint);  
    }
 
 }

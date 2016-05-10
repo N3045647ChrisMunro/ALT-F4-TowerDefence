@@ -66,7 +66,7 @@ public class joystickControl : MonoBehaviour {
     private bool selectingTurret = false;
 
     //Waves
-    public WaveManager waveManager;
+    //public WaveManager waveManager;
 
     //Turret Menu
     turretMenu towerMenu;
@@ -86,13 +86,21 @@ public class joystickControl : MonoBehaviour {
     private Color originalMat;
 
     //Indexing
-    public int currentXIndex;
-    public int currentZIndex;
+    private int XIndex;
+    private int ZIndex;
+    public indexDetect indexScript;
+
+    //Main menu
+    public menuCursScript selMenu;
+    private bool selMenuActive = true;
+
+    public bool buyTurretHit = false;
+    public bool upgradeTurretHit = false;
 
     void Start()
     {
-       // mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-       // initialCameraPos = mainCamera.transform.position;
+        // mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        // initialCameraPos = mainCamera.transform.position;
 
         initialMenCursPos = menuCurs.transform.position;
         initialSelCursPos = selectionCurs.transform.position;
@@ -108,12 +116,17 @@ public class joystickControl : MonoBehaviour {
         //Audio
         audioMangr = GameObject.FindGameObjectWithTag("Audio");
 
+        //Indexing
+        indexScript = GameObject.FindGameObjectWithTag("indexing").GetComponent<indexDetect>();
+
+        //Sel Menu
+        selMenu = GetComponent<menuCursScript>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        waveManager.spawnNewWave = false;
+
         if (curTime <= 0.2f && currentCurs != null)
         {
             moveCursor();
@@ -123,12 +136,38 @@ public class joystickControl : MonoBehaviour {
         {
             curTime -= Time.deltaTime;
         }
-        //moveMenuCurs();
+
         select();
     }
 
     //This functions moves the cursor accroding to joystick input
     void moveCursor()
+    {
+        //Calculate new cursor position
+        Vector3 newPos = new Vector3();
+        newPos = currentCurs.transform.position;
+
+        //Z and X axisaxis
+        if (currentCurs == selectionCurs)
+        {
+            if (indexScript.currentXIndex == 0 && indexScript.currentZIndex == 0)
+                moveFromOrigin();
+
+            if (indexScript.currentXIndex == 9 && indexScript.currentZIndex == 9)
+                moveFromEnd();
+
+            if (indexScript.currentXIndex == 0 && indexScript.currentZIndex == 9)
+                moveFromRight();
+
+            if (indexScript.currentXIndex == 9 && indexScript.currentZIndex == 0)
+                moveFromLeft();
+
+            otherProjection();
+        }
+
+    }
+
+    void moveFromOrigin()
     {
         float cursorHor = 0;
         float cursorVert = 0;
@@ -137,75 +176,122 @@ public class joystickControl : MonoBehaviour {
         cursorHor = Input.GetAxisRaw("Horizontal");
         cursorVert = Input.GetAxisRaw("Vertical");
 
-        //Calculate new cursor position
-        Vector3 newPos = new Vector3();
-        newPos = currentCurs.transform.position;
-
-
-        //Calculate new camera position
-        //This is used to slightly move the camera when cursor moves
-        Vector3 newCamPos = new Vector3();
-      //  newCamPos = mainCamera.transform.position;
-
-        //Z and X axisaxis
-        if (currentCurs == selectionCurs)
+        if (cursorVert > sensetivity && curZ < 9)           //positive direction
         {
-            if (cursorVert > sensetivity && curZ < 9)           //positive direction
-            {
-                newPos.z += step;
-                newCamPos.z += cameraStep;
-
-                curZ++;
-            }
-
-            if (cursorVert < -sensetivity && curZ > 0)          //negative direction
-            {
-                newPos.z -= step;
-                newCamPos.z -= cameraStep;
-
-                curZ--;
-            }
-
-            //X axis
-            if (cursorHor > sensetivity && curX < 9)              //positive direction
-            {
-                newPos.x += step;
-                newCamPos.x += cameraStep;
-
-                curX++;
-            }
-
-            if (cursorHor < -sensetivity && curX > 0)           //negative durection
-            {
-                newPos.x -= step;
-                newCamPos.x -= cameraStep;
-
-                curX--;
-            }
-
-            otherProjection();
+            curZ++;
         }
 
-        //Y AXIS
-        if (currentCurs == menuCurs)
+        if (cursorVert < -sensetivity && curZ > 0)          //negative direction
         {
-            if (cursorVert > sensetivity && !topEdge())           //positive direction
-            {
-                newPos.y += step;
-                newCamPos.y += cameraStep;
-            }
-
-            if (cursorVert < -sensetivity && !botEdge())          //negative direction
-            {
-                newPos.y -= step;
-                newCamPos.y -= cameraStep;
-            }
-
-            //Apply new position
-            currentCurs.transform.position = newPos;
+            curZ--;
         }
 
-       // mainCamera.transform.position = newCamPos;
+        //X axis
+        if (cursorHor > sensetivity && curX < 9)              //positive direction
+        {
+            curX++;
+        }
+
+        if (cursorHor < -sensetivity && curX > 0)           //negative durection
+        {
+            curX--;
+        }
+    }
+
+    void moveFromEnd()
+    {
+        float cursorHor = 0;
+        float cursorVert = 0;
+
+        //Get new iput values
+        cursorHor = Input.GetAxisRaw("Horizontal");
+        cursorVert = Input.GetAxisRaw("Vertical");
+
+        if (cursorVert > sensetivity && curZ > 0)           //positive direction
+        {
+            curZ--;
+        }
+
+        if (cursorVert < -sensetivity && curZ < 9)          //negative direction
+        {
+            curZ++;
+        }
+
+        //X axis
+        if (cursorHor > sensetivity && curX > 0)              //positive direction
+        {
+            curX--;
+        }
+
+        if (cursorHor < -sensetivity && curX < 9)           //negative durection
+        {
+            curX++;
+        }
+
+    }
+
+    void moveFromLeft()
+    {
+        float cursorHor = 0;
+        float cursorVert = 0;
+
+        //Get new iput values
+        cursorHor = Input.GetAxisRaw("Horizontal");
+        cursorVert = Input.GetAxisRaw("Vertical");
+
+        if (cursorVert > sensetivity && curX > 0)           //positive direction
+        {
+            curX--;
+        }
+
+        if (cursorVert < -sensetivity && curX < 9)          //negative direction
+        {
+            curX++;
+        }
+
+        //X axis
+        if (cursorHor > sensetivity && curZ < 9)              //positive direction
+        {
+            curZ++;
+        }
+
+        if (cursorHor < -sensetivity && curZ > 0)           //negative durection
+        {
+            curZ--;
+        }
+        Debug.Log(curX + " " + curZ);
+    }
+
+    void moveFromRight()
+    {
+        float cursorHor = 0;
+        float cursorVert = 0;
+
+        //Get new iput values
+        cursorHor = Input.GetAxisRaw("Horizontal");
+        cursorVert = Input.GetAxisRaw("Vertical");
+
+        if (cursorVert > sensetivity && curX < 9)           //positive direction
+        {
+            curX++;
+        }
+
+        if (cursorVert < -sensetivity && curX > 0)          //negative direction
+        {
+            curX--;
+        }
+
+        //X axis
+        if (cursorHor > sensetivity && curZ > 0)              //positive direction
+        {
+            curZ--;
+        }
+
+        if (cursorHor < -sensetivity && curZ < 9)           //negative durection
+        {
+            curZ++;
+        }
+        Debug.Log(curX + " " + curZ);
     }
 
     void otherProjection()
@@ -221,18 +307,40 @@ public class joystickControl : MonoBehaviour {
             }
         }
 
-        curTile = gridScript.getTile(curPlane, curX, curZ);       //get new tile                                                                     
-        Renderer[] renderers = curTile.GetComponentsInChildren<Renderer>();
-        originalMat = renderers[0].material.color;
-        foreach (Renderer rend in renderers)
+        //prevTile = curTile;
+        curTile = gridScript.getTile(curPlane, curX, curZ);       //get new tile          
+
+        //Valid tile
+        if (curTile.GetComponent<TileData>().occupiedBy == null)
         {
-            rend.material.color = Color.green;
+
+            Renderer[] renderers = curTile.GetComponentsInChildren<Renderer>();
+            originalMat = renderers[0].material.color;
+            foreach (Renderer rend in renderers)
+            {
+                rend.material.color = Color.green;
+            }
         }
-        Debug.Log(curTile.name);
+        else    //not valid tile
+        {
+            GameObject occupant = curTile.GetComponent<TileData>().occupiedBy;
+            if (occupant.tag == "UsedTile")
+            {
+                curTile = occupant;
+
+                Renderer[] rendererss = occupant.GetComponentsInChildren<Renderer>();
+                originalMat = rendererss[0].material.color;
+                foreach (Renderer rendo in rendererss)
+                {
+                    rendo.material.color = Color.red;
+                }
+            }
+        }
+
     }
 
 
-   
+
     //-------------------------------------------CHECK EDGES-----------------------------------------------
     //These functions return true, if a cursor is outside allowed area 
     bool rightEdge()
@@ -247,7 +355,7 @@ public class joystickControl : MonoBehaviour {
         //selectionCurs.transform.position = initialSelCursPos;
         curX = 0;
         curZ = 0;
-       // mainCamera.transform.position = initialCameraPos;
+        // mainCamera.transform.position = initialCameraPos;
     }
 
     bool leftEdge()
@@ -346,32 +454,45 @@ public class joystickControl : MonoBehaviour {
     //SELECTION CURSOR ACTIVE
     void onSelectCursorClick()
     {
-        if (curTile != null && curTile.tag != "UsedTile")
+        selMenu.MenuOn = true;
+
+        if (curTile != null)
         {
-            Debug.Log(selectingTurret);
-            if (scoreSystem.buyTurret() && !selectingTurret)
+            if (scoreSystem.canBuyTurret() && !selectingTurret)        //Building
             {
-                GameObject newTurret = Instantiate(turret, curTile.transform.position, turret.transform.rotation) as GameObject;
+                if (curTile.tag != "UsedTile")
+                {
+                    if (curTile.GetComponent<TileData>().occupiedBy == null)
+                    {
+                        string currentPlane = planeDet.currentPlane;
 
-                curTile.tag = "UsedTile";
+                        GameObject newTurret = Instantiate(turret, curTile.transform.position, turret.transform.rotation) as GameObject;
 
-                turretOffset offset = newTurret.GetComponent<turretOffset>();
-                Vector3 turretPos = curTile.transform.position;
-                //turretPos.x += offset.xOffset;
-                // turretPos.z -= offset.zOffset;
-                float sizeY = newTurret.GetComponent<BoxCollider>().bounds.size.y;
-                turretPos.y += sizeY;
+                        alignToPlane(newTurret);
 
-                newTurret.transform.parent = parentCube.transform;
-                newTurret.transform.position = turretPos;
+                        curTile.tag = "UsedTile";
+                        curTile.GetComponent<TileData>().occupiedBy = newTurret;
+                        cursorChange();
 
-                cursorChange();
+                        curTile = null;
+                        scoreSystem.buyTurret();
+                    }
+                    else
+                    {
+                        cursorChange();
+                    }
+                }
+                else                                                                                    //Attemptto build failed
+                {
+                    cursorChange();
+                }
 
-                curTile = null;
             }
 
-            if (selectingTurret)
+            if (selectingTurret)                                                                        //Upgrading
             {
+                Debug.Log("Upgrade?");
+                currentTurret = curTile.GetComponent<TileData>().occupiedBy;
                 if (currentTurret != null)
                 {
                     Transform prevTransform = currentTurret.transform;
@@ -381,7 +502,12 @@ public class joystickControl : MonoBehaviour {
                     if (newTurr != null)
                     {
                         newTurr.transform.parent = parentCube.transform;
+                        curTile.GetComponent<TileData>().occupiedBy = newTurr;
                         Destroy(currentTurret);
+                        scoreSystem.upgradeTurret();
+
+                        prevTile = null;
+                        curTile = null;
                     }
                 }
                 cursorChange();
@@ -396,54 +522,83 @@ public class joystickControl : MonoBehaviour {
     //-------------------------------MENU CURSOR ACTIVE---------------------------------
     void onMenuCursorClick()
     {
-        // deleteProjection();
-        RaycastHit hit;
-        Vector3 rayOrigin = new Vector3();
-        rayOrigin = currentCurs.transform.position;
-        Ray cursorRay = new Ray(rayOrigin, Vector3.forward);  //Create a ray with cursor as an origin and down as a direction
+        // selMenuActive = false;
 
-        //Some button was hit
-        if (Physics.Raycast(cursorRay, out hit))                     //If something was hit
+        if (buyTurretHit)
         {
-            if (hit.collider.tag == "GUI")                         //Check if it is a tile
+            if (!menuActive)
             {
-                //BUY TURRET
-                if (hit.collider.name == "buyTurret")
-                {
-                    if (!menuActive)
-                    {
-                        menuActive = true;
-                        subMenu.SetActive(true);
-                        currentCurs = null;
-                        menuCurs.transform.position = initialMenCursPos;
-                    }
-                    selectingTurret = false;
-
-                }
-
-                //UPGRADE TURRET
-                if (hit.collider.name == "upgrade")
-                {
-                    Debug.Log("attempt to upgrade");
-                    selectingTurret = true;
-                    cursorChange();
-                }
-
-                //WAVE SPAWN
-                if (hit.collider.name == "waveSpawn")
-                {
-                    waveManager.spawnNewWave = true;
-
-                    //Sound
-                    audioMangr = GameObject.FindGameObjectWithTag("Audio");
-                    if (audioMangr.activeSelf)
-                    {
-                        inGameAudio gameAudio = audioMangr.GetComponent<inGameAudio>();
-                        gameAudio.waveSource.Play();
-                    }
-                }
+                menuActive = true;
+                subMenu.SetActive(true);
+                currentCurs = null;
+                menuCurs.transform.position = initialMenCursPos;
             }
+            selectingTurret = false;
+            buyTurretHit = false;
+            selMenu.currentButton = -10;
+
+            selMenu.MenuOn = false;
         }
+
+        //UPGRADE TURRET
+        if (upgradeTurretHit)
+        {
+            selectingTurret = true;
+            cursorChange();
+
+            upgradeTurretHit = false;
+            selMenu.currentButton = -10;
+            selMenu.MenuOn = false;
+        }
+
+ // deleteProjection();
+        //RaycastHit hit;
+        //Vector3 rayOrigin = new Vector3();
+        //rayOrigin = currentCurs.transform.position;
+        //Ray cursorRay = new Ray(rayOrigin, Vector3.forward);  //Create a ray with cursor as an origin and down as a direction
+
+ ////Some button was hit
+        //if (Physics.Raycast(cursorRay, out hit))                     //If something was hit
+        //{
+        //    if (hit.collider.tag == "GUI")                         //Check if it is a tile
+        //    {
+        //        //BUY TURRET
+        //        if (hit.collider.name == "buyTurret")
+        //        {
+        //            if (!menuActive)
+        //            {
+        //                menuActive = true;
+        //                subMenu.SetActive(true);
+        //                currentCurs = null;
+        //                menuCurs.transform.position = initialMenCursPos;
+        //            }
+        //            selectingTurret = false;
+
+ //        }
+
+ //        //UPGRADE TURRET
+        //        if (hit.collider.name == "upgrade")
+        //        {
+        //            Debug.Log("attempt to upgrade");
+        //            selectingTurret = true;
+        //            cursorChange();
+        //        }
+
+         //WAVE SPAWN
+        //if (hit.collider.name == "waveSpawn")
+        //{
+        //    waveManager.spawnNewWave = true;
+
+         //    //Sound
+        //    audioMangr = GameObject.FindGameObjectWithTag("Audio");
+        //    if (audioMangr.activeSelf)
+        //    {
+        //        inGameAudio gameAudio = audioMangr.GetComponent<inGameAudio>();
+        //        gameAudio.waveSource.Play();
+        //    }
+        //}
+        //}
+        //}
         else
         {
             triggerOff = false;
@@ -466,5 +621,113 @@ public class joystickControl : MonoBehaviour {
         turret = towerMenu.getTurret();
         cursorChange();
     }
+
+    void alignToPlane(GameObject newTurret)
+    {
+        string currentPlane = planeDet.currentPlane;
+
+        turretOffset offset = newTurret.GetComponent<turretOffset>();
+        float sizeY = newTurret.GetComponent<BoxCollider>().bounds.size.y;
+        Vector3 newPos;
+
+        switch (currentPlane)
+        {
+            case "TopPlane":
+                newTurret.transform.parent = GameObject.Find("TopSide").transform;
+
+                newPos = curTile.transform.localPosition;
+                newPos.y += sizeY;
+
+                //Add the offset
+                newPos.x += offset.xOffset;
+                newPos.z -= offset.zOffset;
+
+                newTurret.transform.localPosition = newPos;
+                newTurret.transform.localRotation = curTile.transform.localRotation;
+                break;
+            case "FarPlane":
+                newTurret.transform.parent = GameObject.Find("FarSide").transform;
+
+                newPos = curTile.transform.localPosition;
+
+                sizeY = newTurret.GetComponent<BoxCollider>().bounds.size.y;
+                newPos.y += sizeY;
+
+                //Add the offset
+                newPos.x += offset.xOffset;
+                newPos.z -= offset.zOffset;
+
+                newTurret.transform.localPosition = newPos;
+                newTurret.transform.localRotation = curTile.transform.localRotation;
+
+                break;
+            case "NearPlane":
+                newTurret.transform.parent = GameObject.Find("NearSide").transform;
+
+                newPos = curTile.transform.localPosition;
+
+                sizeY = newTurret.GetComponent<BoxCollider>().bounds.size.y;
+                newPos.y += sizeY;
+
+                //Add the offset
+                newPos.x += offset.xOffset;
+                newPos.z -= offset.zOffset;
+
+                newTurret.transform.localPosition = newPos;
+                newTurret.transform.localRotation = curTile.transform.localRotation;
+
+                break;
+            case "BotPlane":
+                newTurret.transform.parent = GameObject.Find("BotSide").transform;
+
+                newPos = curTile.transform.localPosition;
+
+                sizeY = newTurret.GetComponent<BoxCollider>().bounds.size.y;
+                newPos.y += sizeY;
+
+                //Add the offset
+                newPos.x += offset.xOffset;
+                newPos.z -= offset.zOffset;
+
+                newTurret.transform.localPosition = newPos;
+                newTurret.transform.localRotation = curTile.transform.localRotation;
+
+                break;
+            case "LeftPlane":
+                newTurret.transform.parent = GameObject.Find("LeftSide").transform;
+
+                newPos = curTile.transform.localPosition;
+
+                sizeY = newTurret.GetComponent<BoxCollider>().bounds.size.y;
+                newPos.y += sizeY;
+
+                //Add the offset
+                newPos.x += offset.xOffset;
+                newPos.z -= offset.zOffset;
+
+                newTurret.transform.localPosition = newPos;
+                newTurret.transform.localRotation = curTile.transform.localRotation;
+
+                break;
+            case "RightPlane":
+                newTurret.transform.parent = GameObject.Find("RightSide").transform;
+
+                newPos = curTile.transform.localPosition;
+
+                sizeY = newTurret.GetComponent<BoxCollider>().bounds.size.y;
+                newPos.y += sizeY;
+
+                //Add the offset
+                newPos.x += offset.xOffset;
+                newPos.z -= offset.zOffset;
+
+                newTurret.transform.localPosition = newPos;
+                newTurret.transform.localRotation = curTile.transform.localRotation;
+
+                break;
+
+        }
+    }
+
 
 }

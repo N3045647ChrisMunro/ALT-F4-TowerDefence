@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class WaveManager : MonoBehaviour {
 
@@ -23,6 +24,8 @@ public class WaveManager : MonoBehaviour {
     private float spawnDelay_ = 0.5f;
 
     private GameObject enemyToSpawn_;
+
+    public Text waveCountTXT;
 
     // Use this for initialization
     void Start()
@@ -66,6 +69,8 @@ public class WaveManager : MonoBehaviour {
            StartCoroutine(waveSpawn(waveCount));
            scoreSystem.UpdateScore = true;
         }
+
+        waveCountTXT.text = waveCount.ToString();
     }
 
     IEnumerator waveSpawn(int waveNumber)

@@ -3,9 +3,11 @@ using System.Collections;
 
 public class FirstTower :Tower {
 
+    public string turretType;
+
     void Start()
     {
-        this.type = "basicLightTower";
+        this.type = "Level1_Basic_Turret";
         this.damage = 3;
         this.range = 2f;
         this.fireCooldown = 0.6f;
