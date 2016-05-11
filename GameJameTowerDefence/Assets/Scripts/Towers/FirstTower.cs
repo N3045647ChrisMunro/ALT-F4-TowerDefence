@@ -26,7 +26,6 @@ public class FirstTower :Tower {
         if (col.gameObject.tag == "Enemy")
         {
             string enemyCurrFace = col.gameObject.GetComponent<EnemyBase>().currFace;
-
             //Make sure the enemy is on the same face as the turret
             if (CurFace == enemyCurrFace)
             {

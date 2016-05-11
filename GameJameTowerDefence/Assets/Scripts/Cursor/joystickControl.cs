@@ -259,7 +259,6 @@ public class joystickControl : MonoBehaviour {
         {
             curZ--;
         }
-        Debug.Log(curX + " " + curZ);
     }
 
     void moveFromRight()
@@ -291,7 +290,6 @@ public class joystickControl : MonoBehaviour {
         {
             curZ++;
         }
-        Debug.Log(curX + " " + curZ);
     }
 
     void otherProjection()
@@ -501,7 +499,7 @@ public class joystickControl : MonoBehaviour {
 
                     if (newTurr != null)
                     {
-                        newTurr.transform.parent = parentCube.transform;
+                        newTurr.transform.parent = currentTurret.transform.parent;
                         curTile.GetComponent<TileData>().occupiedBy = newTurr;
                         Destroy(currentTurret);
                         scoreSystem.upgradeTurret();

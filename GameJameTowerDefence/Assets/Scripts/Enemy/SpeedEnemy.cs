@@ -58,23 +58,7 @@ public class SpeedEnemy : EnemyBase {
             Destroy(this.gameObject);
         }
 
-        if (currentWaypoint <= 11)
-        {
-            this.currFace = "TopPlane";
-        }
-        if (currentWaypoint > 11 && currentWaypoint <= 21)
-        {
-            this.currFace = "FarPlane";
-        }
-        if (currentWaypoint > 21 && currentWaypoint <= 37)
-        {
-            this.currFace = "BotPlane";
-        }
-        if (currentWaypoint > 38 && currentWaypoint <= 47)
-        {
-            this.currFace = "NearPlane";
-        }
-
+        resetCurrentFace(currentWaypoint);
         fixRotation();
 
     }

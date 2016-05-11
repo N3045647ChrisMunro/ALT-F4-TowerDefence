@@ -99,4 +99,32 @@ public class EnemyBase : MonoBehaviour{
         moveSpeed = moveSpeed * 2;
     }
 
+    public void resetCurrentFace(int currentWaypoint)
+    {
+        if (currentWaypoint <= 12)
+        {
+            this.currFace = "TopPlane";
+        }
+        if (currentWaypoint > 12 && currentWaypoint <= 21)
+        {
+            this.currFace = "FarPlane";
+        }
+        if (currentWaypoint > 21 && currentWaypoint <= 36)
+        {
+            this.currFace = "LeftPlane";
+        }
+        if (currentWaypoint > 36 && currentWaypoint <= 48)
+        {
+            this.currFace = "BotPlane";
+        }
+        if (currentWaypoint > 48 && currentWaypoint <= 63)
+        {
+            this.currFace = "RightPlane";
+        }
+        if (currentWaypoint > 63 && currentWaypoint <= 71)
+        {
+            this.currFace = "NearPlane";
+        }
+    }
+
 }

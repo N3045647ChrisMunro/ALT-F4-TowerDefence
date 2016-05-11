@@ -40,11 +40,6 @@ public class indexDetect : MonoBehaviour {
 
     void getindex(Vector3 dir)
     {
-        if (dir == null)
-        {
-            Debug.Log("Please stop with the nullException");
-        }
-
         RaycastHit hit;
         Vector3 rayOrigin = new Vector3();
         rayOrigin = this.transform.position;

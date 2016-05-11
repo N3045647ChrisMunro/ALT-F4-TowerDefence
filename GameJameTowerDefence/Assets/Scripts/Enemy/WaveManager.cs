@@ -44,7 +44,7 @@ public class WaveManager : MonoBehaviour {
         waveCount = 1;
 
         //First 5 wave
-        createWave(10, 0, 0);
+        createWave(1, 0, 0);
         createWave(10, 3, 0);
         createWave(8, 5, 2);
         createWave(25, 10, 0);
@@ -56,7 +56,7 @@ public class WaveManager : MonoBehaviour {
         createWave(60, 40, 8);
         createWave(40, 30, 15);
         createWave(80, 50, 20);
-
+ 
     }
 
     // Update is called once per frame
